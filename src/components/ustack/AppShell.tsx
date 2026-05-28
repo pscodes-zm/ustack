@@ -12,10 +12,11 @@ import { NotificationsSheet } from "./sheets/NotificationsSheet";
 import { CreateVaultSheet } from "./sheets/CreateVaultSheet";
 import { DepositSheet } from "./sheets/DepositSheet";
 import { WithdrawSheet } from "./sheets/WithdrawSheet";
+import { SendSheet } from "./sheets/SendSheet";
 import { VaultDetailSheet } from "./sheets/VaultDetailSheet";
 import type { Vault } from "@/lib/ustack-data";
 
-export type SheetKind = null | "notifications" | "createVault" | "deposit" | "withdraw" | "vaultDetail";
+export type SheetKind = null | "notifications" | "createVault" | "deposit" | "withdraw" | "send" | "vaultDetail";
 
 export function AppShell() {
   const [tab, setTab] = useState<Tab>("home");
@@ -81,7 +82,7 @@ export function AppShell() {
             <Fab
               onCreateVault={() => setSheet("createVault")}
               onAddFunds={() => setSheet("deposit")}
-              onSend={() => setSheet("withdraw")}
+              onSend={() => setSheet("send")}
               onWithdraw={() => setSheet("withdraw")}
             />
           </div>
@@ -92,6 +93,7 @@ export function AppShell() {
         <CreateVaultSheet open={sheet === "createVault"} onClose={() => setSheet(null)} onDeposit={() => setSheet("deposit")} />
         <DepositSheet open={sheet === "deposit"} onClose={() => setSheet(null)} />
         <WithdrawSheet open={sheet === "withdraw"} onClose={() => setSheet(null)} />
+        <SendSheet open={sheet === "send"} onClose={() => setSheet(null)} />
         <VaultDetailSheet open={sheet === "vaultDetail"} vault={activeVault} onClose={() => setSheet(null)} onDeposit={() => setSheet("deposit")} onWithdraw={() => setSheet("withdraw")} />
       </div>
     </div>
