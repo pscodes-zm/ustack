@@ -1,16 +1,25 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Lock, TrendingUp, ChevronRight, ChevronLeft, ShieldCheck, Sparkles } from "lucide-react";
+import { Lock, TrendingUp, ChevronRight, ChevronLeft, ShieldCheck, Sparkles, Clock } from "lucide-react";
 import { Sheet } from "./Sheet";
+
+const LOCK_OPTIONS = [
+  { months: 1, label: "1 month" },
+  { months: 3, label: "3 months" },
+  { months: 6, label: "6 months" },
+  { months: 12, label: "1 year" },
+  { months: 24, label: "2 years" },
+];
 
 export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; onClose: () => void; onDeposit: () => void }) {
   const [step, setStep] = useState(0);
   const [type, setType] = useState<"hodl" | "stack">("stack");
   const [name, setName] = useState("");
-  const [goal, setGoal] = useState(500_000);
-  const total = 5;
+  const [goal, setGoal] = useState(1_000_000);
+  const [lockMonths, setLockMonths] = useState(6);
 
-  const close = () => { setStep(0); setName(""); setGoal(500_000); onClose(); };
+  const total = 5;
+  const close = () => { setStep(0); setName(""); setGoal(1_000_000); setLockMonths(6); onClose(); };
   const next = () => setStep(Math.min(step + 1, total - 1));
   const prev = () => setStep(Math.max(step - 1, 0));
 
@@ -31,37 +40,58 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
           initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}
           transition={{ duration: 0.3 }}
         >
+          {/* Step 0 — Vault type */}
           {step === 0 && (
             <div>
               <div className="text-xl font-semibold">Choose vault type</div>
-              <div className="text-sm text-muted-foreground mt-1">Pick how you want to save.</div>
-              <div className="mt-5 flex flex-col gap-3">
-                <TypeCard active={type==="hodl"} onClick={()=>setType("hodl")} icon={Lock} title="Hodl Vault" sub="Locked long-term. Higher discipline." grad="grad-coral" />
-                <TypeCard active={type==="stack"} onClick={()=>setType("stack")} icon={TrendingUp} title="Stack Vault" sub="Flexible recurring savings." grad="grad-teal" />
+              <div className="text-sm text-muted-foreground mt-1 mb-5">Pick how you want to save.</div>
+              <div className="flex flex-col gap-3">
+                <TypeCard
+                  active={type === "hodl"} onClick={() => setType("hodl")}
+                  icon={Lock} grad="grad-coral"
+                  title="Hodl Vault"
+                  sub="Lock sats for a set time period — e.g. 6 months. Funds are frozen until the lock expires."
+                />
+                <TypeCard
+                  active={type === "stack"} onClick={() => setType("stack")}
+                  icon={TrendingUp} grad="grad-teal"
+                  title="Stack Vault"
+                  sub="Stack until you hit a target amount — e.g. 1,000,000 sats. Withdraw anytime with a small penalty."
+                />
               </div>
             </div>
           )}
+
+          {/* Step 1 — Name */}
           {step === 1 && (
             <div>
               <div className="text-xl font-semibold">Name your vault</div>
               <div className="text-sm text-muted-foreground mt-1">Make it personal. Specific names stick.</div>
               <input
                 autoFocus
-                value={name} onChange={(e)=>setName(e.target.value)}
+                value={name} onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. School Fees"
                 className="mt-5 w-full bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none focus:shadow-glow-coral transition"
               />
               <div className="mt-3 flex flex-wrap gap-2">
                 {["School Fees", "Future Business", "Emergency", "New Laptop"].map((s) => (
-                  <button key={s} onClick={()=>setName(s)} className="px-3 py-1.5 rounded-full glass text-xs">{s}</button>
+                  <button key={s} onClick={() => setName(s)} className="px-3 py-1.5 rounded-full glass text-xs">{s}</button>
                 ))}
               </div>
             </div>
           )}
+
+          {/* Step 2 — Target amount */}
           {step === 2 && (
             <div>
-              <div className="text-xl font-semibold">Set your goal</div>
-              <div className="text-sm text-muted-foreground mt-1">How much do you want to stack?</div>
+              <div className="text-xl font-semibold">
+                {type === "hodl" ? "Set your target amount" : "Set your goal"}
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">
+                {type === "hodl"
+                  ? "How many sats do you want locked away?"
+                  : "How many sats do you want to stack?"}
+              </div>
               <div className="mt-5 rounded-2xl glass p-5 text-center">
                 <div className="text-xs text-muted-foreground">Target</div>
                 <div className="text-3xl font-semibold mt-1 tabular-nums">{goal.toLocaleString()}</div>
@@ -69,37 +99,79 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
               </div>
               <input
                 type="range" min={50_000} max={5_000_000} step={50_000} value={goal}
-                onChange={(e)=>setGoal(parseInt(e.target.value))}
+                onChange={(e) => setGoal(parseInt(e.target.value))}
                 className="mt-5 w-full accent-[oklch(0.74_0.18_25)]"
               />
               <div className="mt-3 flex gap-2">
                 {[100_000, 500_000, 1_000_000, 2_500_000].map((v) => (
-                  <button key={v} onClick={()=>setGoal(v)} className="flex-1 py-2 rounded-xl glass text-xs">{(v/1000)}k</button>
+                  <button key={v} onClick={() => setGoal(v)} className="flex-1 py-2 rounded-xl glass text-xs">{(v / 1000)}k</button>
                 ))}
               </div>
             </div>
           )}
-          {step === 3 && (
+
+          {/* Step 3 — Lock duration (Hodl) or flexibility note (Stack) */}
+          {step === 3 && type === "hodl" && (
             <div>
-              <div className="text-xl font-semibold">Lock rules</div>
-              <div className="text-sm text-muted-foreground mt-1">Knowing the rules makes them easier to keep.</div>
-              <div className="mt-5 rounded-2xl glass p-5 flex gap-3">
-                <ShieldCheck className="w-5 h-5 text-[oklch(0.78_0.14_190)] shrink-0 mt-0.5" />
-                <div className="text-sm leading-relaxed">
-                  Withdrawals before completion may include penalties. This protects your future self from impulse decisions.
-                </div>
+              <div className="text-xl font-semibold">Set lock duration</div>
+              <div className="text-sm text-muted-foreground mt-1 mb-5">
+                Your sats will be frozen for this period — no withdrawals until time's up.
+              </div>
+              <div className="flex flex-col gap-2">
+                {LOCK_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.months}
+                    onClick={() => setLockMonths(opt.months)}
+                    className={`flex items-center gap-4 rounded-2xl p-4 text-left border transition ${lockMonths === opt.months ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent glass"}`}
+                  >
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${lockMonths === opt.months ? "grad-coral" : "bg-white/5"}`}>
+                      <Clock className={`w-5 h-5 ${lockMonths === opt.months ? "text-background" : ""}`} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold">{opt.label}</div>
+                      <div className="text-xs text-muted-foreground">{opt.months * 30} days locked</div>
+                    </div>
+                    <div className={`w-5 h-5 rounded-full border-2 ${lockMonths === opt.months ? "border-primary bg-primary" : "border-muted"}`} />
+                  </button>
+                ))}
               </div>
             </div>
           )}
+
+          {step === 3 && type === "stack" && (
+            <div>
+              <div className="text-xl font-semibold">How it works</div>
+              <div className="text-sm text-muted-foreground mt-1 mb-5">Stack vault rules — simple and flexible.</div>
+              <div className="flex flex-col gap-3">
+                <RuleRow icon="🎯" title="Stack to your target" body={`Keep depositing until you hit ${goal.toLocaleString()} sats.`} />
+                <RuleRow icon="💸" title="Early withdrawal" body="You can withdraw anytime, but a 2.5% penalty applies if you haven't reached your goal." />
+                <RuleRow icon="🔥" title="Streak rewards" body="Deposit consistently to build your streak and stay disciplined." />
+              </div>
+            </div>
+          )}
+
+          {/* Step 4 — Confirm */}
           {step === 4 && (
             <div>
               <div className="text-xl font-semibold">Confirm vault</div>
               <div className="text-sm text-muted-foreground mt-1">Review and create.</div>
               <div className="mt-5 rounded-2xl glass p-5 flex flex-col gap-3">
-                <Summary k="Type" v={type === "hodl" ? "Hodl Vault" : "Stack Vault"} />
+                <Summary k="Type" v={type === "hodl" ? "🔒 Hodl Vault" : "📈 Stack Vault"} />
                 <Summary k="Name" v={name || "Untitled"} />
-                <Summary k="Goal" v={`${goal.toLocaleString()} sats`} />
-                <Summary k="Penalties" v={type === "hodl" ? "Yes, on early withdraw" : "Soft, flexible"} />
+                <Summary k="Target" v={`${goal.toLocaleString()} sats`} />
+                {type === "hodl"
+                  ? <Summary k="Lock duration" v={LOCK_OPTIONS.find(o => o.months === lockMonths)?.label ?? `${lockMonths}mo`} />
+                  : <Summary k="Withdrawals" v="Flexible (2.5% early penalty)" />
+                }
+                <Summary k="Penalty on early exit" v={type === "hodl" ? "Not allowed — time-locked" : "2.5% of amount"} />
+              </div>
+              <div className="mt-4 rounded-xl bg-white/5 px-4 py-3 flex items-start gap-2">
+                <ShieldCheck className="w-4 h-4 text-[oklch(0.78_0.14_190)] mt-0.5 shrink-0" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {type === "hodl"
+                    ? `Your sats will be fully locked for ${LOCK_OPTIONS.find(o => o.months === lockMonths)?.label}. This is intentional — it keeps your future self protected.`
+                    : "You can withdraw at any time. The 2.5% penalty is there to keep you disciplined, not to punish you."}
+                </p>
               </div>
             </div>
           )}
@@ -126,20 +198,33 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
   );
 }
 
-function TypeCard({ active, onClick, icon: Icon, title, sub, grad }: { active: boolean; onClick: ()=>void; icon: typeof Lock; title: string; sub: string; grad: string }) {
+function TypeCard({ active, onClick, icon: Icon, title, sub, grad }: { active: boolean; onClick: () => void; icon: typeof Lock; title: string; sub: string; grad: string }) {
   return (
-    <button onClick={onClick} className={`rounded-2xl p-4 flex items-center gap-4 text-left transition border ${active ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent"}`}>
-      <div className={`w-12 h-12 rounded-xl ${grad} flex items-center justify-center`}>
+    <button onClick={onClick} className={`rounded-2xl p-4 flex items-start gap-4 text-left transition border ${active ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent"}`}>
+      <div className={`w-12 h-12 rounded-xl ${grad} flex items-center justify-center shrink-0`}>
         <Icon className="w-5 h-5 text-background" />
       </div>
       <div className="flex-1">
         <div className="text-sm font-semibold">{title}</div>
-        <div className="text-xs text-muted-foreground">{sub}</div>
+        <div className="text-xs text-muted-foreground mt-1 leading-relaxed">{sub}</div>
       </div>
-      <div className={`w-5 h-5 rounded-full border-2 ${active ? "border-primary bg-primary" : "border-muted"}`} />
+      <div className={`w-5 h-5 rounded-full border-2 shrink-0 mt-0.5 ${active ? "border-primary bg-primary" : "border-muted"}`} />
     </button>
   );
 }
+
+function RuleRow({ icon, title, body }: { icon: string; title: string; body: string }) {
+  return (
+    <div className="rounded-2xl glass p-4 flex items-start gap-3">
+      <span className="text-xl">{icon}</span>
+      <div>
+        <div className="text-sm font-semibold">{title}</div>
+        <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{body}</div>
+      </div>
+    </div>
+  );
+}
+
 function Summary({ k, v }: { k: string; v: string }) {
   return (
     <div className="flex justify-between text-sm">

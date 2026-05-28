@@ -94,7 +94,7 @@ export function WithdrawSheet({ open, onClose }: { open: boolean; onClose: () =>
               </div>
               <div className="text-base font-semibold">This vault is locked</div>
               <div className="text-sm text-muted-foreground leading-relaxed">
-                <span className="font-semibold text-foreground">{vault.name}</span> is a Hodl Vault — funds are locked until the target period ends.
+                <span className="font-semibold text-foreground">{vault.name}</span> is a Hodl Vault — sats are time-locked and cannot be withdrawn until the lock period expires.
               </div>
               <div className="w-full rounded-xl bg-white/5 p-4 flex items-center justify-between">
                 <span className="text-xs text-muted-foreground">Days remaining</span>

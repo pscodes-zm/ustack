@@ -37,11 +37,19 @@ export function VaultCard({ vault, onClick, large = false }: { vault: Vault; onC
 
       <div className="relative mt-auto pt-6 flex items-end justify-between">
         <div>
-          <div className="text-[10px] text-muted-foreground">Goal</div>
-          <div className="text-sm font-semibold tabular-nums">{(vault.goalSats / 1000).toFixed(0)}k sats</div>
+          <div className="text-[10px] text-muted-foreground">
+            {vault.type === "hodl" ? "Locked for" : "Target"}
+          </div>
+          <div className="text-sm font-semibold tabular-nums">
+            {vault.type === "hodl"
+              ? `${vault.daysRemaining} days`
+              : `${(vault.goalSats / 1000).toFixed(0)}k sats`}
+          </div>
         </div>
         <div className="text-right">
-          <div className="text-[10px] text-muted-foreground">{vault.locked ? "Locked" : "Flexible"}</div>
+          <div className="text-[10px] text-muted-foreground">
+            {vault.type === "hodl" ? "Time-locked" : "Flexible"}
+          </div>
           <div className="text-xs font-medium">🔥 {vault.streakDays}d</div>
         </div>
       </div>
