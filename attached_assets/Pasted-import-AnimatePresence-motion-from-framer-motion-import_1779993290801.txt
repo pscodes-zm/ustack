@@ -1,20 +1,17 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus, Vault, ArrowDownToLine, Send, ArrowUpFromLine } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
-export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
-  onCreateVault: () => void;
-  onAddFunds: () => void;
-  onSend: () => void;
-  onWithdraw: () => void;
-}) {
+export function Fab() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const actions = [
-    { label: "Create Vault", Icon: Vault,           color: "oklch(0.78 0.13 195)", onClick: onCreateVault },
-    { label: "Add Funds",    Icon: ArrowDownToLine, color: "oklch(0.85 0.12 165)", onClick: onAddFunds },
-    { label: "Send",         Icon: Send,            color: "oklch(0.78 0.11 220)", onClick: onSend },
-    { label: "Withdraw",     Icon: ArrowUpFromLine, color: "oklch(0.72 0.18 25)",  onClick: onWithdraw },
+    { label: "Create Vault", Icon: Vault,           color: "oklch(0.78 0.13 195)", onClick: () => navigate({ to: "/create-vault" }) },
+    { label: "Add Funds",    Icon: ArrowDownToLine, color: "oklch(0.85 0.12 165)", onClick: () => {} },
+    { label: "Send",         Icon: Send,            color: "oklch(0.78 0.11 220)", onClick: () => {} },
+    { label: "Withdraw",     Icon: ArrowUpFromLine, color: "oklch(0.72 0.18 25)",  onClick: () => {} },
   ];
 
   const radius = 110;
@@ -23,7 +20,7 @@ export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
   const step = (endDeg - startDeg) / (actions.length - 1);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-6 z-50 flex justify-center">
+    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center">
       <div className="pointer-events-auto relative">
         <AnimatePresence>
           {open && (
@@ -72,7 +69,7 @@ export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
           transition={{ type: "spring", stiffness: 300, damping: 18 }}
           className="relative grid h-16 w-16 place-items-center rounded-full"
           style={{
-            background: "var(--grad-coral)",
+            background: "var(--gradient-coral)",
             boxShadow: "0 14px 40px -10px oklch(0.72 0.18 25 / 0.7), inset 0 1px 0 oklch(1 0 0 / 0.2)",
           }}
           aria-label={open ? "Close actions" : "Open actions"}
