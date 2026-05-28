@@ -50,7 +50,7 @@ export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
                   transition={{ type: "spring", stiffness: 320, damping: 22, delay: i * 0.04 }}
                   onClick={() => { a.onClick(); setOpen(false); }}
                   className="absolute pointer-events-auto"
-                  style={{ left: 0, bottom: 0 }}
+                  style={{ left: "50%", bottom: "50%" }}
                 >
                   <div className="flex flex-col items-center gap-1.5 -translate-x-1/2 -translate-y-1/2">
                     <div className={`w-14 h-14 rounded-2xl ${a.grad} shadow-float flex items-center justify-center`}>
