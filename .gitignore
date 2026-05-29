@@ -1,3 +1,7 @@
+# Native mobile platform folders (generated — run `npx cap add android/ios` locally)
+android/
+ios/
+
 # Logs
 logs
 *.log
