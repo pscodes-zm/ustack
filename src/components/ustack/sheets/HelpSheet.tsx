@@ -1,0 +1,149 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, MessageCircle, Mail, ExternalLink, Info, Shield, Zap, Lock } from "lucide-react";
+import { Sheet } from "./Sheet";
+
+type View = "help" | "about";
+
+const faqs = [
+  {
+    q: "What is a Hodl Vault?",
+    a: "A Hodl Vault locks your sats for a set time period — e.g. 6 months. You cannot withdraw until the lock expires. This is intentional — it keeps your future self protected from impulse decisions.",
+  },
+  {
+    q: "What is a Stack Vault?",
+    a: "A Stack Vault lets you save toward a target amount — e.g. 1,000,000 sats. You can withdraw anytime but a 2.5% early penalty applies to keep you on track.",
+  },
+  {
+    q: "What is Price Protection?",
+    a: "Price Protection monitors the Bitcoin price and automatically shields your savings if BTC drops by your chosen threshold (2%, 5%, or 10%). You set it once and it works silently.",
+  },
+  {
+    q: "How are my sats stored?",
+    a: "UStack is non-custodial. Your keys are yours. We never hold your funds — we just make the saving experience beautiful and disciplined.",
+  },
+  {
+    q: "What payment methods are supported?",
+    a: "We support Mobile Money (MTN MoMo, Airtel, Zamtel) and Lightning Network deposits. More payment rails coming soon.",
+  },
+  {
+    q: "How do I withdraw my sats?",
+    a: "Tap Withdraw on the home screen or inside a vault. Stack Vaults allow early withdrawal with a 2.5% penalty. Hodl Vaults are locked until the expiry date.",
+  },
+];
+
+export function HelpSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [view, setView] = useState<View>("help");
+  const [expanded, setExpanded] = useState<number | null>(null);
+
+  return (
+    <Sheet open={open} onClose={onClose} title={view === "help" ? "Help & Support" : "About UStack"}>
+      {/* Tab toggle */}
+      <div className="flex p-1 rounded-2xl bg-white/5 mb-6">
+        {(["help", "about"] as const).map((v) => (
+          <button
+            key={v}
+            onClick={() => setView(v)}
+            className="relative flex-1 py-2.5 rounded-xl text-sm font-medium"
+          >
+            {view === v && <motion.div layoutId="help-tab" className="absolute inset-0 grad-coral rounded-xl" />}
+            <span className={`relative ${view === v ? "text-background" : "text-muted-foreground"}`}>
+              {v === "help" ? "FAQ" : "About"}
+            </span>
+          </button>
+        ))}
+      </div>
+
+      {view === "help" && (
+        <div className="flex flex-col gap-2">
+          {faqs.map((faq, i) => (
+            <div key={i} className="rounded-2xl glass overflow-hidden">
+              <button
+                onClick={() => setExpanded(expanded === i ? null : i)}
+                className="w-full flex items-center justify-between px-4 py-4 text-left gap-3"
+              >
+                <span className="text-sm font-medium leading-snug">{faq.q}</span>
+                <motion.div animate={{ rotate: expanded === i ? 180 : 0 }} transition={{ duration: 0.2 }} className="shrink-0">
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                </motion.div>
+              </button>
+              <AnimatePresence>
+                {expanded === i && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="text-xs uppercase tracking-widest text-muted-foreground px-1 mb-1">Contact</div>
+            <button className="rounded-2xl glass p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl grad-teal flex items-center justify-center">
+                <MessageCircle className="w-5 h-5 text-background" />
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-sm font-medium">Live chat</div>
+                <div className="text-xs text-muted-foreground">Usually responds in minutes</div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <button className="rounded-2xl glass p-4 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl grad-coral flex items-center justify-center">
+                <Mail className="w-5 h-5 text-background" />
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-sm font-medium">Email support</div>
+                <div className="text-xs text-muted-foreground">support@ustack.app</div>
+              </div>
+              <ExternalLink className="w-4 h-4 text-muted-foreground" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {view === "about" && (
+        <div className="flex flex-col gap-5">
+          <div className="rounded-3xl glass p-6 flex flex-col items-center gap-3 text-center">
+            <div className="w-16 h-16 rounded-2xl grad-coral flex items-center justify-center text-background text-3xl font-semibold shadow-glow-coral">U</div>
+            <div className="text-xl font-semibold">UStack</div>
+            <div className="text-xs text-muted-foreground">Version 1.0.0</div>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Save Bitcoin the smart way. Vault-based savings built for discipline — not trading. Built for Zambia and Africa.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            {[
+              { icon: Shield, title: "Non-custodial", body: "Your keys. Your coins. We never hold your funds.", grad: "grad-teal" },
+              { icon: Lock, title: "Privacy first", body: "Minimal data collection. No selling your information.", grad: "grad-mint" },
+              { icon: Zap, title: "Lightning fast", body: "Instant Lightning Network deposits and withdrawals.", grad: "grad-btc" },
+              { icon: Info, title: "Open building", body: "Made with love in Zambia 🇿🇲. Africa-native Bitcoin savings.", grad: "grad-coral" },
+            ].map(({ icon: Icon, title, body, grad }) => (
+              <div key={title} className="rounded-2xl glass p-4 flex items-start gap-3">
+                <div className={`w-10 h-10 rounded-xl ${grad} flex items-center justify-center shrink-0`}>
+                  <Icon className="w-5 h-5 text-background" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">{title}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{body}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground">
+            © 2026 UStack · Terms · Privacy
+          </p>
+        </div>
+      )}
+    </Sheet>
+  );
+}

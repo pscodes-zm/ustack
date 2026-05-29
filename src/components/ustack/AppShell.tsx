@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "@tanstack/react-router";
 import { TopBar } from "./TopBar";
 import { BottomNav, type Tab } from "./BottomNav";
 import { SideDrawer } from "./SideDrawer";
@@ -14,17 +15,32 @@ import { DepositSheet } from "./sheets/DepositSheet";
 import { WithdrawSheet } from "./sheets/WithdrawSheet";
 import { SendSheet } from "./sheets/SendSheet";
 import { VaultDetailSheet } from "./sheets/VaultDetailSheet";
+import { SettingsSheet } from "./sheets/SettingsSheet";
+import { HelpSheet } from "./sheets/HelpSheet";
+import { EditProfileSheet } from "./sheets/EditProfileSheet";
 import type { Vault } from "@/lib/ustack-data";
 
-export type SheetKind = null | "notifications" | "createVault" | "deposit" | "withdraw" | "send" | "vaultDetail";
+export type SheetKind =
+  | null
+  | "notifications"
+  | "createVault"
+  | "deposit"
+  | "withdraw"
+  | "send"
+  | "vaultDetail"
+  | "settings"
+  | "help"
+  | "editProfile";
 
 export function AppShell() {
+  const nav = useNavigate();
   const [tab, setTab] = useState<Tab>("home");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sheet, setSheet] = useState<SheetKind>(null);
   const [activeVault, setActiveVault] = useState<Vault | null>(null);
 
   const openVault = (v: Vault) => { setActiveVault(v); setSheet("vaultDetail"); };
+  const logout = () => nav({ to: "/welcome" });
 
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center md:p-8 relative overflow-hidden">
@@ -36,14 +52,16 @@ export function AppShell() {
 
       {/* phone container */}
       <div className="relative w-full md:w-[420px] md:h-[860px] h-screen md:rounded-[3rem] overflow-hidden md:border md:border-white/10 md:shadow-float bg-background">
-        {/* Side drawer behind everything */}
         <SideDrawer
           open={drawerOpen}
           onClose={() => setDrawerOpen(false)}
           onSelect={(t) => { setTab(t); setDrawerOpen(false); }}
+          onSettings={() => { setDrawerOpen(false); setSheet("settings"); }}
+          onHelp={() => { setDrawerOpen(false); setSheet("help"); }}
+          onPriceProtection={() => { setDrawerOpen(false); setTab("profile"); }}
+          onLogout={logout}
         />
 
-        {/* Main app surface — animates when drawer opens */}
         <motion.div
           animate={drawerOpen ? { scale: 0.86, x: "62%", borderRadius: 32 } : { scale: 1, x: 0, borderRadius: 0 }}
           transition={{ type: "spring", stiffness: 260, damping: 30 }}
@@ -51,11 +69,7 @@ export function AppShell() {
           style={{ boxShadow: drawerOpen ? "0 32px 64px -16px rgba(0,0,0,0.6)" : "none" }}
         >
           {drawerOpen && (
-            <button
-              aria-label="Close menu"
-              onClick={() => setDrawerOpen(false)}
-              className="absolute inset-0 z-50"
-            />
+            <button aria-label="Close menu" onClick={() => setDrawerOpen(false)} className="absolute inset-0 z-50" />
           )}
 
           <div className="relative h-full flex flex-col">
@@ -70,10 +84,25 @@ export function AppShell() {
                   exit={{ opacity: 0, x: -24 }}
                   transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  {tab === "home" && <HomeScreen onOpenVault={openVault} onDeposit={() => setSheet("deposit")} onWithdraw={() => setSheet("withdraw")} onSend={() => setSheet("send")} onCreateVault={() => setSheet("createVault")} />}
+                  {tab === "home" && (
+                    <HomeScreen
+                      onOpenVault={openVault}
+                      onDeposit={() => setSheet("deposit")}
+                      onWithdraw={() => setSheet("withdraw")}
+                      onSend={() => setSheet("send")}
+                      onCreateVault={() => setSheet("createVault")}
+                    />
+                  )}
                   {tab === "vaults" && <VaultsScreen onOpenVault={openVault} onCreateVault={() => setSheet("createVault")} />}
                   {tab === "activity" && <ActivityScreen />}
-                  {tab === "profile" && <ProfileScreen />}
+                  {tab === "profile" && (
+                    <ProfileScreen
+                      onEdit={() => setSheet("editProfile")}
+                      onSettings={() => setSheet("settings")}
+                      onHelp={() => setSheet("help")}
+                      onLogout={logout}
+                    />
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -95,6 +124,9 @@ export function AppShell() {
         <WithdrawSheet open={sheet === "withdraw"} onClose={() => setSheet(null)} />
         <SendSheet open={sheet === "send"} onClose={() => setSheet(null)} />
         <VaultDetailSheet open={sheet === "vaultDetail"} vault={activeVault} onClose={() => setSheet(null)} onDeposit={() => setSheet("deposit")} onWithdraw={() => setSheet("withdraw")} />
+        <SettingsSheet open={sheet === "settings"} onClose={() => setSheet(null)} />
+        <HelpSheet open={sheet === "help"} onClose={() => setSheet(null)} />
+        <EditProfileSheet open={sheet === "editProfile"} onClose={() => setSheet(null)} />
       </div>
     </div>
   );

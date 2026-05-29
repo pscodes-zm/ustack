@@ -36,7 +36,7 @@ const slides = [
 function Onboarding() {
   const [i, setI] = useState(0);
   const nav = useNavigate();
-  const next = () => (i < slides.length - 1 ? setI(i + 1) : nav({ to: "/auth" }));
+  const next = () => (i < slides.length - 1 ? setI(i + 1) : nav({ to: "/signup" }));
   const s = slides[i];
 
   return (
@@ -44,7 +44,7 @@ function Onboarding() {
       <div className="h-full min-h-screen md:min-h-[860px] flex flex-col px-7 pt-12 pb-8 grad-hero relative overflow-hidden">
         <div className="flex justify-between items-center">
           <div className="text-xs text-muted-foreground">{i + 1} / {slides.length}</div>
-          <Link to="/auth" className="text-sm text-muted-foreground">Skip</Link>
+          <Link to="/signup" className="text-sm text-muted-foreground">Skip</Link>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center relative">
