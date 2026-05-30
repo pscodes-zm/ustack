@@ -85,17 +85,17 @@ export function HelpSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
           <div className="mt-4 flex flex-col gap-2">
             <div className="text-xs uppercase tracking-widest text-muted-foreground px-1 mb-1">Contact</div>
-            <button className="rounded-2xl glass p-4 flex items-center gap-3">
+            <a href="https://wa.me/260777693802" target="_blank" rel="noopener noreferrer" className="rounded-2xl glass p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl grad-teal flex items-center justify-center">
                 <MessageCircle className="w-5 h-5 text-background" />
               </div>
               <div className="flex-1 text-left">
                 <div className="text-sm font-medium">Live chat</div>
-                <div className="text-xs text-muted-foreground">Usually responds in minutes</div>
+                <div className="text-xs text-muted-foreground">Chat with us on WhatsApp</div>
               </div>
               <ExternalLink className="w-4 h-4 text-muted-foreground" />
-            </button>
-            <button className="rounded-2xl glass p-4 flex items-center gap-3">
+            </a>
+            <a href="mailto:support@ustack.app" className="rounded-2xl glass p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl grad-coral flex items-center justify-center">
                 <Mail className="w-5 h-5 text-background" />
               </div>
@@ -104,7 +104,7 @@ export function HelpSheet({ open, onClose }: { open: boolean; onClose: () => voi
                 <div className="text-xs text-muted-foreground">support@ustack.app</div>
               </div>
               <ExternalLink className="w-4 h-4 text-muted-foreground" />
-            </button>
+            </a>
           </div>
         </div>
       )}

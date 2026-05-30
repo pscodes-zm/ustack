@@ -81,10 +81,9 @@ export function SideDrawer({ open, onClose, onSelect, onSettings, onHelp, onPric
               })}
             </div>
 
-            <div className="mt-8 glass rounded-2xl p-4">
-              <div className="text-xs text-muted-foreground">Total stacked</div>
-              <div className="text-xl font-semibold mt-1">4,812,000 sats</div>
-              <div className="text-xs text-muted-foreground mt-0.5">≈ 0.0481 BTC</div>
+            <div className="mt-8 pt-4 border-t border-white/8 flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">UStack v1.0.0</div>
+              <div className="text-xs text-muted-foreground">© 2026 UStack</div>
             </div>
           </motion.div>
         </motion.div>
