@@ -81,9 +81,8 @@ export function SideDrawer({ open, onClose, onSelect, onSettings, onHelp, onPric
               })}
             </div>
 
-            <div className="mt-8 pt-4 border-t border-white/8 flex items-center justify-between">
-              <div className="text-xs text-muted-foreground">UStack v1.0.0</div>
-              <div className="text-xs text-muted-foreground">© 2026 UStack</div>
+            <div className="mt-8 pt-4 border-t border-white/8">
+              <div className="text-xs text-muted-foreground">© 2026 UStack v1.0.0</div>
             </div>
           </motion.div>
         </motion.div>
