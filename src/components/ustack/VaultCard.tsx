@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Lock, TrendingUp } from "lucide-react";
 import type { Vault } from "@/lib/ustack-data";
+import { fmtZMW } from "@/lib/ustack-data";
 import { ProgressRing } from "./ProgressRing";
 
 const gradMap = {
@@ -37,20 +38,17 @@ export function VaultCard({ vault, onClick, large = false }: { vault: Vault; onC
 
       <div className="relative mt-auto pt-6 flex items-end justify-between">
         <div>
-          <div className="text-[10px] text-muted-foreground">
-            {vault.type === "hodl" ? "Locked for" : "Target"}
-          </div>
-          <div className="text-sm font-semibold tabular-nums">
-            {vault.type === "hodl"
-              ? `${vault.daysRemaining} days`
-              : `${(vault.goalSats / 1000).toFixed(0)}k sats`}
-          </div>
+          <div className="text-[10px] text-muted-foreground">Saved</div>
+          <div className="text-sm font-semibold tabular-nums">{fmtZMW(vault.currentSats)}</div>
+          <div className="text-[10px] text-muted-foreground/60 tabular-nums">{(vault.currentSats / 1000).toFixed(0)}k sats</div>
         </div>
         <div className="text-right">
           <div className="text-[10px] text-muted-foreground">
+            {vault.type === "hodl" ? `${vault.daysRemaining}d left` : `${vault.streakDays}d streak`}
+          </div>
+          <div className="text-xs font-medium">
             {vault.type === "hodl" ? "Time-locked" : "Flexible"}
           </div>
-          <div className="text-xs font-medium">{vault.streakDays}d streak</div>
         </div>
       </div>
 

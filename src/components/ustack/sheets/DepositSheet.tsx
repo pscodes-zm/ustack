@@ -5,7 +5,7 @@ import {
   ChevronRight, TrendingUp, Lock, ArrowLeft, X as XIcon, QrCode, ExternalLink
 } from "lucide-react";
 import { Sheet } from "./Sheet";
-import { vaults, fmtSats, type Vault } from "@/lib/ustack-data";
+import { vaults, fmtSats, fmtZMW, satsToZMW, BTC_PRICE_ZMW, type Vault } from "@/lib/ustack-data";
 
 type Step = "dest" | "vault" | "method" | "processing" | "done";
 type Dest = "balance" | "vault";
@@ -272,6 +272,11 @@ export function DepositSheet({
                       />
                       <span className="text-sm text-muted-foreground">ZMW</span>
                     </div>
+                    {Number(amount) > 0 && (
+                      <div className="mt-1 text-center text-xs font-medium text-foreground/70 tabular-nums">
+                        {Math.round((Number(amount) / BTC_PRICE_ZMW) * 100_000_000).toLocaleString()} sats
+                      </div>
+                    )}
                     <div className="mt-2 flex gap-2">
                       {QUICK_AMOUNTS.map((v) => (
                         <button key={v} onClick={() => setAmount(v)} className={`flex-1 py-2 rounded-xl text-xs transition ${amount === v ? "grad-coral text-background" : "glass text-muted-foreground"}`}>{v}</button>
@@ -304,6 +309,9 @@ export function DepositSheet({
                             />
                             <span className="text-sm text-muted-foreground">sats</span>
                           </div>
+                          {Number(lnAmount) > 0 && (
+                            <div className="mt-1 text-center text-xs font-medium text-foreground/70 tabular-nums">{fmtZMW(Number(lnAmount))}</div>
+                          )}
                           <div className="mt-1.5 text-[10px] text-muted-foreground text-center">Enter the amount, then generate your invoice.</div>
                         </div>
                         <button

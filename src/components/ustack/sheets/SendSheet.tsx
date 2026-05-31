@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Smartphone, CheckCircle2 } from "lucide-react";
 import { Sheet } from "./Sheet";
-import { availableSats, fmtSats } from "@/lib/ustack-data";
+import { availableSats, fmtSats, fmtZMW } from "@/lib/ustack-data";
 
 type Step = "form" | "done";
 type MoMoProvider = "airtel" | "mtn" | "zamtel";
@@ -108,6 +108,9 @@ export function SendSheet({ open, onClose }: { open: boolean; onClose: () => voi
               />
               <span className="text-sm text-muted-foreground">sats</span>
             </div>
+            {Number(amount) > 0 && (
+              <div className="mt-1 text-center text-xs font-medium text-foreground/70 tabular-nums">{fmtZMW(Number(amount))}</div>
+            )}
             <div className="mt-2 flex items-center justify-between px-1">
               <span className="text-xs text-muted-foreground">
                 Available: <span className="text-foreground font-semibold">{fmtSats(availableSats)}</span>

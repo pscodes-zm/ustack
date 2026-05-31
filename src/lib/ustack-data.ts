@@ -72,3 +72,10 @@ export const tips = [
 
 export const fmtSats = (n: number) => n.toLocaleString("en-US");
 export const fmtBTC = (sats: number) => (sats / 100_000_000).toFixed(4);
+
+export const BTC_PRICE_ZMW = 600_000; // 1 BTC = K 600,000 (matches mock vault goalFiat)
+export const satsToZMW = (sats: number) => (sats / 100_000_000) * BTC_PRICE_ZMW;
+export const fmtZMW = (sats: number) => {
+  const k = satsToZMW(sats);
+  return `K ${k < 1 ? k.toFixed(2) : Math.round(k).toLocaleString("en-US")}`;
+};

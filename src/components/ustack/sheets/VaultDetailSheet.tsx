@@ -2,6 +2,7 @@ import { Lock, TrendingUp, Calendar, Flame, ArrowDownToLine, ArrowUpFromLine, Tr
 import { Sheet } from "./Sheet";
 import { ProgressRing } from "../ProgressRing";
 import type { Vault } from "@/lib/ustack-data";
+import { fmtZMW } from "@/lib/ustack-data";
 
 const gradMap = { coral: "grad-coral", teal: "grad-teal", mint: "grad-mint", aqua: "grad-teal", btc: "grad-btc" } as const;
 
@@ -26,8 +27,9 @@ export function VaultDetailSheet({ open, vault, onClose, onDeposit, onWithdraw }
               {vault.type === "hodl" ? <Lock className="w-3 h-3" /> : <TrendingUp className="w-3 h-3" />}
               {vault.type === "hodl" ? "Hodl Vault" : "Stack Vault"}
             </div>
-            <div className="text-2xl font-semibold tabular-nums mt-1">{vault.currentSats.toLocaleString()}</div>
-            <div className="text-xs text-muted-foreground">of {vault.goalSats.toLocaleString()} sats</div>
+            <div className="text-2xl font-semibold tabular-nums mt-1">{fmtZMW(vault.currentSats)}</div>
+            <div className="text-xs text-muted-foreground">{vault.currentSats.toLocaleString()} sats</div>
+            <div className="text-[10px] text-muted-foreground/60 mt-0.5">of {fmtZMW(vault.goalSats)} goal</div>
           </div>
         </div>
       </div>

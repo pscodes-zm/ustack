@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { ArrowDownToLine, ArrowUpFromLine, Send, Eye, EyeOff, Flame, ShieldCheck } from "lucide-react";
-import { vaults, activity, tips, totalBalanceSats, lockedSats, availableSats, monthlyStackedSats, monthlyGoalSats, fmtSats, fmtBTC, type Vault } from "@/lib/ustack-data";
+import { vaults, activity, tips, totalBalanceSats, lockedSats, availableSats, monthlyStackedSats, monthlyGoalSats, fmtSats, fmtBTC, fmtZMW, type Vault } from "@/lib/ustack-data";
 import { CountUp } from "../CountUp";
 import { ProgressRing } from "../ProgressRing";
 import { VaultCard } from "../VaultCard";
@@ -45,11 +45,15 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
           </div>
           <div className="text-sm text-muted-foreground">sats</div>
         </div>
-        <div className="relative text-sm text-muted-foreground -mt-1">≈ {fmtBTC(totalBalanceSats)} BTC</div>
+        <div className="relative -mt-1 flex items-center gap-3">
+          <span className="text-sm text-muted-foreground">≈ {fmtBTC(totalBalanceSats)} BTC</span>
+          <span className="text-white/20 text-xs">·</span>
+          <span className="text-sm font-medium text-foreground/80">{hidden ? "•••" : fmtZMW(totalBalanceSats)}</span>
+        </div>
 
         <div className="relative mt-5 grid grid-cols-2 gap-3">
-          <Stat label="Locked" value={hidden ? "•••" : fmtSats(lockedSats)} accent="coral" />
-          <Stat label="Available" value={hidden ? "•••" : fmtSats(availableSats)} accent="teal" />
+          <Stat label="Locked" value={hidden ? "•••" : fmtSats(lockedSats)} zmw={hidden ? undefined : fmtZMW(lockedSats)} accent="coral" />
+          <Stat label="Available" value={hidden ? "•••" : fmtSats(availableSats)} zmw={hidden ? undefined : fmtZMW(availableSats)} accent="teal" />
         </div>
 
         {/* monthly progress */}
@@ -158,7 +162,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
   );
 }
 
-function Stat({ label, value, accent }: { label: string; value: string; accent: "coral" | "teal" }) {
+function Stat({ label, value, zmw, accent }: { label: string; value: string; zmw?: string; accent: "coral" | "teal" }) {
   const dot = accent === "coral" ? "bg-[oklch(0.74_0.18_25)]" : "bg-[oklch(0.78_0.14_190)]";
   return (
     <div className="rounded-2xl bg-white/5 px-4 py-3">
@@ -166,6 +170,7 @@ function Stat({ label, value, accent }: { label: string; value: string; accent: 
         <span className={`w-1.5 h-1.5 rounded-full ${dot}`} /> {label}
       </div>
       <div className="text-base font-semibold mt-1 tabular-nums">{value}</div>
+      {zmw && <div className="text-[10px] text-muted-foreground/70 tabular-nums">{zmw}</div>}
     </div>
   );
 }
