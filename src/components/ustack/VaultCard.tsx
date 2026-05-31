@@ -5,7 +5,7 @@ import { fmtZMW } from "@/lib/ustack-data";
 import { ProgressRing } from "./ProgressRing";
 
 const accentMap = {
-  coral: "oklch(0.74 0.18 25)",
+  coral: "oklch(0.73 0.19 55)",
   teal: "oklch(0.78 0.14 190)",
   mint: "oklch(0.86 0.13 160)",
   aqua: "oklch(0.78 0.14 190)",

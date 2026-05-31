@@ -75,7 +75,7 @@ function Signup() {
                   key={s}
                   animate={{ width: s === step ? 24 : 8, opacity: i <= idx ? 1 : 0.3 }}
                   className="h-1.5 rounded-full"
-                  style={{ background: i <= idx ? "oklch(0.74 0.18 25)" : "oklch(0.4 0.01 260)" }}
+                  style={{ background: i <= idx ? "oklch(0.73 0.19 55)" : "oklch(0.4 0.01 260)" }}
                 />
               );
             })}
@@ -169,7 +169,7 @@ function Signup() {
                   {Array.from({ length: 6 }).map((_, i) => (
                     <motion.div
                       key={i}
-                      animate={{ scale: pin.length === i + 1 ? [1, 1.35, 1] : 1, background: i < pin.length ? "oklch(0.74 0.18 25)" : "oklch(0.3 0.01 260)" }}
+                      animate={{ scale: pin.length === i + 1 ? [1, 1.35, 1] : 1, background: i < pin.length ? "oklch(0.73 0.19 55)" : "oklch(0.3 0.01 260)" }}
                       transition={{ duration: 0.18 }}
                       className="w-4 h-4 rounded-full"
                     />

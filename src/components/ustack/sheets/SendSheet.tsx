@@ -179,7 +179,7 @@ export function SendSheet({ open, onClose }: { open: boolean; onClose: () => voi
 function MethodCard({ active, onClick, icon: Icon, label, sub }: { active: boolean; onClick: () => void; icon: typeof Zap; label: string; sub: string }) {
   return (
     <button onClick={onClick} className={`rounded-2xl p-4 flex flex-col items-start gap-2 text-left transition border ${active ? "bg-card border-primary/50" : "bg-card/50 border-transparent"}`}>
-      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={active ? { background: "oklch(0.74 0.18 25)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={active ? { background: "oklch(0.73 0.19 55)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="text-sm font-semibold">{label}</div>

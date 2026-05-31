@@ -4,7 +4,7 @@ import { Check, Camera } from "lucide-react";
 import { Sheet } from "./Sheet";
 
 const AVATARS = ["NK", "SA", "TM", "BK", "LM", "JP", "RN", "EM"];
-const COLORS = ["oklch(0.86 0.13 160)", "oklch(0.74 0.18 25)", "oklch(0.78 0.14 190)", "oklch(0.74 0.18 55)", "oklch(0.86 0.13 160)", "oklch(0.74 0.18 25)", "oklch(0.78 0.14 190)", "oklch(0.74 0.18 55)"];
+const COLORS = ["oklch(0.86 0.13 160)", "oklch(0.73 0.19 55)", "oklch(0.78 0.14 190)", "oklch(0.74 0.18 55)", "oklch(0.86 0.13 160)", "oklch(0.73 0.19 55)", "oklch(0.78 0.14 190)", "oklch(0.74 0.18 55)"];
 
 export function EditProfileSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [name, setName] = useState("Norman K.");

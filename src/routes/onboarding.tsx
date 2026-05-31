@@ -87,7 +87,7 @@ function Onboarding() {
 }
 
 function IllustrationArt({ kind, accent }: { kind: string; accent: "coral" | "teal" | "mint" }) {
-  const color = accent === "coral" ? "oklch(0.74 0.18 25)" : accent === "teal" ? "oklch(0.78 0.14 190)" : "oklch(0.86 0.13 160)";
+  const color = accent === "coral" ? "oklch(0.73 0.19 55)" : accent === "teal" ? "oklch(0.78 0.14 190)" : "oklch(0.86 0.13 160)";
   return (
     <div className="relative w-56 h-56">
       <div className="relative w-full h-full glass-strong rounded-[2.5rem] flex items-center justify-center">

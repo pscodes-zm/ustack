@@ -4,7 +4,7 @@ import { ProgressRing } from "../ProgressRing";
 import type { Vault } from "@/lib/ustack-data";
 import { fmtZMW } from "@/lib/ustack-data";
 
-const accentMap = { coral: "oklch(0.74 0.18 25)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)" } as const;
+const accentMap = { coral: "oklch(0.73 0.19 55)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)" } as const;
 
 export function VaultDetailSheet({ open, vault, onClose, onDeposit, onWithdraw }: {
   open: boolean; vault: Vault | null; onClose: () => void; onDeposit: () => void; onWithdraw: () => void;

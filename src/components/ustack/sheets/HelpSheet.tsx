@@ -96,7 +96,7 @@ export function HelpSheet({ open, onClose }: { open: boolean; onClose: () => voi
               <ExternalLink className="w-4 h-4 text-muted-foreground" />
             </a>
             <a href="mailto:support@ustack.app" className="rounded-2xl glass p-4 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.74 0.18 25)" }}>
+              <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.73 0.19 55)" }}>
                 <Mail className="w-5 h-5" />
               </div>
               <div className="flex-1 text-left">
@@ -125,7 +125,7 @@ export function HelpSheet({ open, onClose }: { open: boolean; onClose: () => voi
               { icon: Shield, title: "Non-custodial", body: "Your keys. Your coins. We never hold your funds.", color: "oklch(0.78 0.14 190)" },
               { icon: Lock, title: "Privacy first", body: "Minimal data collection. No selling your information.", color: "oklch(0.86 0.13 160)" },
               { icon: Zap, title: "Lightning fast", body: "Instant Lightning Network deposits and withdrawals.", color: "oklch(0.74 0.18 55)" },
-              { icon: Info, title: "Open building", body: "Made in Zambia. Africa-native Bitcoin savings.", color: "oklch(0.74 0.18 25)" },
+              { icon: Info, title: "Open building", body: "Made in Zambia. Africa-native Bitcoin savings.", color: "oklch(0.73 0.19 55)" },
             ].map(({ icon: Icon, title, body, color }) => (
               <div key={title} className="rounded-2xl glass p-4 flex items-start gap-3">
                 <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color }}>

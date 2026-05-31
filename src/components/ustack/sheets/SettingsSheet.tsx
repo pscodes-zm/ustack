@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Fingerprint, Bell, DollarSign, Trash2, ChevronRight, Check, ArrowLeft } from "lucide-react";
+import { Fingerprint, Bell, Trash2, ChevronRight, Check, ArrowLeft, Sun, Moon } from "lucide-react";
 import { Sheet } from "./Sheet";
+import { useTheme } from "@/lib/theme-context";
 
 type Section = "main" | "pin" | "notifications";
 
 export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { theme, setTheme } = useTheme();
   const [section, setSection] = useState<Section>("main");
   const [biometrics, setBiometrics] = useState(true);
   const [notifDeposit, setNotifDeposit] = useState(true);
@@ -42,6 +44,26 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           </Group>
 
           <Group title="Display">
+            <Row
+              icon={theme === "dark" ? Moon : Sun}
+              label="Theme"
+              right={
+                <div className="flex gap-0.5 p-1 rounded-xl glass">
+                  <button
+                    onClick={() => setTheme("light")}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${theme === "light" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                  >
+                    <Sun className="w-3 h-3" /> Light
+                  </button>
+                  <button
+                    onClick={() => setTheme("dark")}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition ${theme === "dark" ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}
+                  >
+                    <Moon className="w-3 h-3" /> Dark
+                  </button>
+                </div>
+              }
+            />
             <div className="px-4 py-3">
               <div className="text-xs text-muted-foreground mb-2">Display currency</div>
               <div className="flex gap-2">
@@ -75,7 +97,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
                 {Array.from({ length: 6 }).map((_, i) => (
                   <motion.div
                     key={i}
-                    animate={{ scale: pinEntry.length === i + 1 ? [1, 1.3, 1] : 1, background: i < pinEntry.length ? "oklch(0.74 0.18 25)" : "oklch(0.3 0.01 260)" }}
+                    animate={{ scale: pinEntry.length === i + 1 ? [1, 1.3, 1] : 1, background: i < pinEntry.length ? "oklch(0.73 0.19 55)" : "oklch(0.3 0.01 260)" }}
                     transition={{ duration: 0.18 }}
                     className="w-4 h-4 rounded-full"
                   />

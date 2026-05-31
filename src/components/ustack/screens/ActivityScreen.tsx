@@ -8,8 +8,8 @@ const iconMap = {
   protection: ShieldCheck, withdraw: ArrowUpFromLine, vault: Vault,
 } as const;
 const colorMap: Record<string, string> = {
-  deposit: "oklch(0.74 0.18 25)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
-  protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.74 0.18 25)",
+  deposit: "oklch(0.73 0.19 55)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
+  protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.73 0.19 55)",
 };
 
 type FilterKind = "all" | "deposit" | "withdraw" | "vault" | "events";

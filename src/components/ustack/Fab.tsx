@@ -71,7 +71,7 @@ export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
           animate={{ rotate: open ? 135 : 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 18 }}
           className="relative grid h-16 w-16 place-items-center rounded-full"
-          style={{ background: "oklch(0.74 0.18 25)" }}
+          style={{ background: "oklch(0.73 0.19 55)" }}
           aria-label={open ? "Close actions" : "Open actions"}
         >
           <Plus className="h-7 w-7 text-white" />

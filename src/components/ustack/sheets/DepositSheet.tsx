@@ -11,7 +11,7 @@ type Step = "dest" | "vault" | "method" | "processing" | "done";
 type Dest = "balance" | "vault";
 
 const accentColor: Record<string, string> = {
-  coral: "oklch(0.74 0.18 25)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)",
+  coral: "oklch(0.73 0.19 55)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)",
 };
 
 const PROVIDERS = ["Airtel", "MTN MoMo", "Zamtel"];
@@ -134,7 +134,7 @@ export function DepositSheet({
                 onClick={() => selectDest("vault")}
                 className="flex items-center gap-4 rounded-2xl glass p-5 text-left transition active:scale-[0.98] border border-transparent hover:border-white/10"
               >
-                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.74 0.18 25)" }}>
+                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.73 0.19 55)" }}>
                   <LayoutGrid className="w-6 h-6" />
                 </div>
                 <div className="flex-1">

@@ -177,7 +177,7 @@ function Auth() {
                       animate={{
                         scale: pin.length === i + 1 ? [1, 1.3, 1] : 1,
                         background: i < pin.length
-                          ? "oklch(0.74 0.18 25)"
+                          ? "oklch(0.73 0.19 55)"
                           : "oklch(0.3 0.01 260)",
                       }}
                       transition={{ duration: 0.2 }}

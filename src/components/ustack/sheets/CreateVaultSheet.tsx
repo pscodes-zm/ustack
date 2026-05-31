@@ -48,7 +48,7 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
               <div className="flex flex-col gap-3">
                 <TypeCard
                   active={type === "hodl"} onClick={() => setType("hodl")}
-                  icon={Lock} iconColor="oklch(0.74 0.18 25)"
+                  icon={Lock} iconColor="oklch(0.73 0.19 55)"
                   title="Hodl Vault"
                   sub="Lock sats for a set time period, e.g. 6 months. Funds are frozen until the lock expires."
                 />
@@ -100,7 +100,7 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
               <input
                 type="range" min={50_000} max={5_000_000} step={50_000} value={goal}
                 onChange={(e) => setGoal(parseInt(e.target.value))}
-                className="mt-5 w-full accent-[oklch(0.74_0.18_25)]"
+                className="mt-5 w-full accent-[oklch(0.73_0.19_55)]"
               />
               <div className="mt-3 flex gap-2">
                 {[100_000, 500_000, 1_000_000, 2_500_000].map((v) => (
@@ -124,7 +124,7 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
                     onClick={() => setLockMonths(opt.months)}
                     className={`flex items-center gap-4 rounded-2xl p-4 text-left border transition ${lockMonths === opt.months ? "bg-card border-primary/50" : "bg-card/50 border-transparent glass"}`}
                   >
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={lockMonths === opt.months ? { background: "oklch(0.74 0.18 25)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={lockMonths === opt.months ? { background: "oklch(0.73 0.19 55)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
                       <Clock className="w-5 h-5" />
                     </div>
                     <div className="flex-1">

@@ -43,10 +43,10 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* ─── DARK THEME (default) ──────────────────────────────────────── */
 :root {
   --radius: 1rem;
 
-  /* dark by default */
   --background: oklch(0.16 0.012 270);
   --foreground: oklch(0.97 0.005 250);
   --card: oklch(0.21 0.014 268);
@@ -55,28 +55,60 @@
   --popover: oklch(0.21 0.014 268);
   --popover-foreground: oklch(0.97 0.005 250);
 
-  --primary: oklch(0.74 0.18 25);          /* vivid coral */
-  --primary-foreground: oklch(0.14 0.01 270);
+  --primary: oklch(0.73 0.19 55);          /* Bitcoin orange */
+  --primary-foreground: oklch(0.10 0.01 270);
   --secondary: oklch(0.28 0.018 268);
   --secondary-foreground: oklch(0.97 0.005 250);
   --muted: oklch(0.26 0.014 268);
   --muted-foreground: oklch(0.7 0.02 260);
   --accent: oklch(0.78 0.14 190);          /* electric teal */
-  --accent-foreground: oklch(0.14 0.01 270);
-  --destructive: oklch(0.65 0.2 25);
+  --accent-foreground: oklch(0.10 0.01 270);
+  --destructive: oklch(0.65 0.22 15);      /* true red */
   --destructive-foreground: oklch(0.97 0.005 250);
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.74 0.18 25 / 50%);
+  --ring: oklch(0.73 0.19 55 / 50%);
 
-  --coral: oklch(0.74 0.18 25);
+  --coral: oklch(0.73 0.19 55);
   --teal: oklch(0.78 0.14 190);
   --mint: oklch(0.86 0.13 160);
   --aqua: oklch(0.78 0.12 220);
   --btc: oklch(0.74 0.18 55);
 
+  --negative: oklch(0.65 0.22 15);         /* price-down red */
+
   --shadow-soft: 0 4px 16px -4px oklch(0 0 0 / 0.35);
   --shadow-float: 0 8px 32px -8px oklch(0 0 0 / 0.45);
+}
+
+/* ─── LIGHT THEME ───────────────────────────────────────────────── */
+.light {
+  --background: oklch(0.96 0.006 260);
+  --foreground: oklch(0.14 0.01 260);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.14 0.01 260);
+  --card-elev: oklch(0.98 0.005 260);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.14 0.01 260);
+
+  --primary: oklch(0.73 0.19 55);          /* same Bitcoin orange */
+  --primary-foreground: oklch(0.10 0.01 270);
+  --secondary: oklch(0.92 0.008 260);
+  --secondary-foreground: oklch(0.14 0.01 260);
+  --muted: oklch(0.93 0.006 260);
+  --muted-foreground: oklch(0.48 0.02 260);
+  --accent: oklch(0.78 0.14 190);
+  --accent-foreground: oklch(0.10 0.01 270);
+  --destructive: oklch(0.58 0.22 15);
+  --destructive-foreground: oklch(0.97 0.005 250);
+  --border: oklch(0 0 0 / 10%);
+  --input: oklch(0 0 0 / 8%);
+  --ring: oklch(0.73 0.19 55 / 50%);
+
+  --negative: oklch(0.55 0.22 15);
+
+  --shadow-soft: 0 4px 16px -4px oklch(0 0 0 / 0.12);
+  --shadow-float: 0 8px 32px -8px oklch(0 0 0 / 0.18);
 }
 
 @layer base {
@@ -94,6 +126,7 @@
 }
 
 @layer utilities {
+  /* ── Glass – dark (default) ── */
   .glass {
     background: color-mix(in oklab, var(--card) 80%, transparent);
     backdrop-filter: blur(16px);
@@ -106,7 +139,29 @@
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid color-mix(in oklab, white 8%, transparent);
   }
-  .shadow-soft { box-shadow: var(--shadow-soft); }
+
+  /* ── Glass – light overrides ── */
+  .light .glass {
+    background: oklch(1 0 0 / 70%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(0 0 0 / 8%);
+  }
+  .light .glass-strong {
+    background: oklch(1 0 0 / 92%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(0 0 0 / 8%);
+  }
+
+  /* ── White-overlay utilities → black-overlay in light mode ── */
+  .light .border-white\/5  { border-color: oklch(0 0 0 / 5%); }
+  .light .border-white\/8  { border-color: oklch(0 0 0 / 8%); }
+  .light .border-white\/10 { border-color: oklch(0 0 0 / 10%); }
+  .light .bg-white\/5  { background-color: oklch(0 0 0 / 5%); }
+  .light .bg-white\/10 { background-color: oklch(0 0 0 / 10%); }
+
+  .shadow-soft  { box-shadow: var(--shadow-soft); }
   .shadow-float { box-shadow: var(--shadow-float); }
 
   .no-scrollbar::-webkit-scrollbar { display: none; }

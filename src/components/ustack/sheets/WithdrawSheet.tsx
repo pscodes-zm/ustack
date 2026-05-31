@@ -12,7 +12,7 @@ type Step = "source" | "vault" | "locked" | "amount" | "warning" | "done";
 type Source = "balance" | "vault";
 
 const accentColor: Record<string, string> = {
-  coral: "oklch(0.74 0.18 25)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)",
+  coral: "oklch(0.73 0.19 55)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)",
 };
 const PROVIDERS = ["Airtel", "MTN MoMo", "Zamtel"];
 
@@ -130,7 +130,7 @@ export function WithdrawSheet({
                 onClick={() => selectSource("vault")}
                 className="flex items-center gap-4 rounded-2xl glass p-5 text-left transition active:scale-[0.98] border border-transparent hover:border-white/10"
               >
-                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.74 0.18 25)" }}>
+                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.73 0.19 55)" }}>
                   <LayoutGrid className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
@@ -197,7 +197,7 @@ export function WithdrawSheet({
               </div>
             )}
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col items-center text-center gap-3">
-              <div className="w-16 h-16 rounded-2xl bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.74 0.18 25)" }}>
+              <div className="w-16 h-16 rounded-2xl bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.73 0.19 55)" }}>
                 <Lock className="w-8 h-8" />
               </div>
               <div className="text-base font-semibold">This vault is locked</div>
@@ -338,14 +338,14 @@ export function WithdrawSheet({
         {/* Step 4: Early withdrawal warning */}
         {step === "warning" && vault && (
           <motion.div key="warning" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-            <div className="rounded-2xl border border-[oklch(0.74_0.18_25)]/30 bg-[oklch(0.74_0.18_25)]/10 p-5">
+            <div className="rounded-2xl border border-[oklch(0.73_0.19_55)]/30 bg-[oklch(0.73_0.19_55)]/10 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <AlertTriangle className="w-5 h-5 text-[oklch(0.74_0.18_25)]" />
+                <AlertTriangle className="w-5 h-5 text-[oklch(0.73_0.19_55)]" />
                 <div className="text-sm font-semibold">Early Withdrawal Warning</div>
               </div>
               <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                 <div className="flex justify-between"><span>Withdrawal amount</span><span className="text-foreground font-semibold">{fmtSats(Number(amount))}</span></div>
-                <div className="flex justify-between text-[oklch(0.85_0.15_25)]"><span>Early exit penalty (2.5%)</span><span className="font-semibold">-{fmtSats(penalty)}</span></div>
+                <div className="flex justify-between text-[oklch(0.85_0.15_55)]"><span>Early exit penalty (2.5%)</span><span className="font-semibold">-{fmtSats(penalty)}</span></div>
                 <div className="h-px bg-white/10 my-1" />
                 <div className="flex justify-between"><span>You will receive</span><span className="text-foreground font-semibold">{fmtSats(receiveAmount)}</span></div>
               </div>
@@ -355,7 +355,7 @@ export function WithdrawSheet({
             </div>
             <div className="mt-5 flex gap-3">
               <button onClick={() => setStep("amount")} className="flex-1 glass py-4 rounded-2xl font-semibold text-sm">Keep stacking</button>
-              <button onClick={() => setStep("done")} className="flex-1 bg-[oklch(0.74_0.18_25)]/20 text-[oklch(0.85_0.15_25)] border border-[oklch(0.74_0.18_25)]/30 py-4 rounded-2xl font-semibold text-sm">Withdraw anyway</button>
+              <button onClick={() => setStep("done")} className="flex-1 bg-[oklch(0.73_0.19_55)]/20 text-[oklch(0.85_0.15_55)] border border-[oklch(0.73_0.19_55)]/30 py-4 rounded-2xl font-semibold text-sm">Withdraw anyway</button>
             </div>
           </motion.div>
         )}
@@ -424,8 +424,8 @@ function AmountField({ amount, setAmount, maxAmount }: { amount: string; setAmou
 
 function EarlyWarningBadge({ pct }: { pct: number }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl bg-[oklch(0.74_0.18_25)]/10 border border-[oklch(0.74_0.18_25)]/20 px-3 py-2">
-      <AlertTriangle className="w-3.5 h-3.5 text-[oklch(0.74_0.18_25)] shrink-0" />
+    <div className="flex items-center gap-2 rounded-xl bg-[oklch(0.73_0.19_55)]/10 border border-[oklch(0.73_0.19_55)]/20 px-3 py-2">
+      <AlertTriangle className="w-3.5 h-3.5 text-[oklch(0.73_0.19_55)] shrink-0" />
       <span className="text-xs text-muted-foreground">Vault at <span className="text-foreground font-semibold">{Math.round(pct * 100)}%</span>. Early withdrawal applies a 2.5% penalty.</span>
     </div>
   );
@@ -434,7 +434,7 @@ function EarlyWarningBadge({ pct }: { pct: number }) {
 function MethodCard({ active, onClick, icon: Icon, label, sub }: { active: boolean; onClick: () => void; icon: typeof Zap; label: string; sub: string }) {
   return (
     <button onClick={onClick} className={`rounded-2xl p-4 flex flex-col items-start gap-2 text-left transition border ${active ? "bg-card border-primary/50" : "bg-card/50 border-transparent"}`}>
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center`} style={active ? { background: "oklch(0.74 0.18 25)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center`} style={active ? { background: "oklch(0.73 0.19 55)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
         <Icon className="w-5 h-5" />
       </div>
       <div className="text-sm font-semibold">{label}</div>

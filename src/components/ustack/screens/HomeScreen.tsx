@@ -91,7 +91,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
 
       {/* Quick actions */}
       <div className="grid grid-cols-3 gap-3">
-        <QuickAction icon={ArrowDownToLine} label="Deposit" onClick={onDeposit} accent="oklch(0.74 0.18 25)" />
+        <QuickAction icon={ArrowDownToLine} label="Deposit" onClick={onDeposit} accent="oklch(0.73 0.19 55)" />
         <QuickAction icon={ArrowUpFromLine} label="Withdraw" onClick={onWithdraw} accent="oklch(0.78 0.14 190)" />
         <QuickAction icon={Send} label="Send" onClick={onSend} accent="oklch(0.86 0.13 160)" />
       </div>
@@ -165,7 +165,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
 }
 
 function Stat({ label, value, zmw, accent }: { label: string; value: string; zmw?: string; accent: "coral" | "teal" }) {
-  const dot = accent === "coral" ? "bg-[oklch(0.74_0.18_25)]" : "bg-[oklch(0.78_0.14_190)]";
+  const dot = accent === "coral" ? "bg-[oklch(0.73_0.19_55)]" : "bg-[oklch(0.78_0.14_190)]";
   return (
     <div className="rounded-2xl bg-white/5 px-4 py-3">
       <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -195,8 +195,8 @@ function QuickAction({ icon: Icon, label, onClick, accent }: { icon: typeof Arro
 import type { Activity as ActivityT } from "@/lib/ustack-data";
 function ActivityRow({ a }: { a: ActivityT }) {
   const colorMap: Record<string, string> = {
-    deposit: "oklch(0.74 0.18 25)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
-    protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.74 0.18 25)",
+    deposit: "oklch(0.73 0.19 55)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
+    protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.73 0.19 55)",
   };
   return (
     <div className="rounded-2xl bg-card/60 p-3.5 flex items-center gap-3">
@@ -286,7 +286,7 @@ function PriceTicker() {
 
   const positive = CHANGE_24H >= 0;
   const sparkPath = buildSparkPath(SPARK_POINTS, 80, 28);
-  const strokeColor = positive ? "oklch(0.78 0.14 165)" : "oklch(0.74 0.18 25)";
+  const strokeColor = positive ? "oklch(0.78 0.14 165)" : "oklch(0.65 0.22 15)";
 
   return (
     <motion.div
@@ -316,12 +316,12 @@ function PriceTicker() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`text-sm font-semibold tabular-nums ${flash === "up" ? "text-[oklch(0.78_0.14_165)]" : flash === "down" ? "text-[oklch(0.74_0.18_25)]" : ""}`}
+            className={`text-sm font-semibold tabular-nums ${flash === "up" ? "text-[oklch(0.78_0.14_165)]" : flash === "down" ? "text-[oklch(0.65_0.22_15)]" : ""}`}
           >
             K {price.toLocaleString("en-US")}
           </motion.div>
         </AnimatePresence>
-        <div className={`flex items-center justify-end gap-0.5 text-[10px] font-semibold ${positive ? "text-[oklch(0.78_0.14_165)]" : "text-[oklch(0.74_0.18_25)]"}`}>
+        <div className={`flex items-center justify-end gap-0.5 text-[10px] font-semibold ${positive ? "text-[oklch(0.78_0.14_165)]" : "text-[oklch(0.65_0.22_15)]"}`}>
           {positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
           {positive ? "+" : ""}{CHANGE_24H}% today
         </div>
