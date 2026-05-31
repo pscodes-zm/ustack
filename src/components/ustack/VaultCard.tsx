@@ -4,24 +4,23 @@ import type { Vault } from "@/lib/ustack-data";
 import { fmtZMW } from "@/lib/ustack-data";
 import { ProgressRing } from "./ProgressRing";
 
-const gradMap = {
-  coral: "grad-coral",
-  teal: "grad-teal",
-  mint: "grad-mint",
-  aqua: "grad-teal",
-  btc: "grad-btc",
+const accentMap = {
+  coral: "oklch(0.74 0.18 25)",
+  teal: "oklch(0.78 0.14 190)",
+  mint: "oklch(0.86 0.13 160)",
+  aqua: "oklch(0.78 0.14 190)",
+  btc: "oklch(0.74 0.18 55)",
 } as const;
 
 export function VaultCard({ vault, onClick, large = false }: { vault: Vault; onClick?: () => void; large?: boolean }) {
   const pct = vault.currentSats / vault.goalSats;
   return (
     <motion.button
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`relative w-full text-left rounded-3xl p-4 glass-strong overflow-hidden shadow-soft ${large ? "h-44" : "h-48"}`}
     >
-      <div className={`absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-30 blur-2xl ${gradMap[vault.accent]}`} />
 
       <div className="relative flex justify-between items-start">
         <div>
@@ -53,7 +52,7 @@ export function VaultCard({ vault, onClick, large = false }: { vault: Vault; onC
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
-        <motion.div initial={{ width: 0 }} animate={{ width: `${pct * 100}%` }} transition={{ duration: 1 }} className={`h-full ${gradMap[vault.accent]}`} />
+        <motion.div initial={{ width: 0 }} animate={{ width: `${pct * 100}%` }} transition={{ duration: 1 }} className="h-full" style={{ background: accentMap[vault.accent] }} />
       </div>
     </motion.button>
   );

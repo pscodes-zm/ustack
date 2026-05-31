@@ -7,10 +7,10 @@ const iconMap = {
   deposit: ArrowDownToLine, milestone: Trophy, streak: Flame,
   protection: ShieldCheck, withdraw: ArrowUpFromLine, vault: Vault,
 } as const;
-const gradMap = {
-  deposit: "grad-coral", milestone: "grad-mint", streak: "grad-btc",
-  protection: "grad-teal", withdraw: "grad-teal", vault: "grad-coral",
-} as const;
+const colorMap: Record<string, string> = {
+  deposit: "oklch(0.74 0.18 25)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
+  protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.74 0.18 25)",
+};
 
 type FilterKind = "all" | "deposit" | "withdraw" | "vault" | "events";
 
@@ -51,7 +51,7 @@ export function ActivityScreen() {
             onClick={() => setFilter(f.id)}
             className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition ${
               filter === f.id
-                ? "grad-coral text-background shadow-glow-coral"
+                ? "bg-primary text-primary-foreground"
                 : "glass text-muted-foreground"
             }`}
           >
@@ -86,8 +86,8 @@ export function ActivityScreen() {
                   transition={{ delay: i * 0.04 }}
                   className="rounded-2xl bg-card/60 p-3.5 flex items-center gap-3"
                 >
-                  <div className={`w-11 h-11 rounded-xl ${gradMap[a.kind]} flex items-center justify-center shrink-0`}>
-                    <Icon className="w-5 h-5 text-background" />
+                  <div className="w-11 h-11 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: colorMap[a.kind] }}>
+                    <Icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-sm font-medium">{a.title}</div>

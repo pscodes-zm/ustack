@@ -10,8 +10,8 @@ import { vaults, fmtSats, fmtZMW, satsToZMW, BTC_PRICE_ZMW, type Vault } from "@
 type Step = "dest" | "vault" | "method" | "processing" | "done";
 type Dest = "balance" | "vault";
 
-const accentGrad: Record<string, string> = {
-  coral: "grad-coral", teal: "grad-teal", mint: "grad-mint", aqua: "grad-teal", btc: "grad-btc",
+const accentColor: Record<string, string> = {
+  coral: "oklch(0.74 0.18 25)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)",
 };
 
 const PROVIDERS = ["Airtel", "MTN MoMo", "Zamtel"];
@@ -120,8 +120,8 @@ export function DepositSheet({
                 onClick={() => selectDest("balance")}
                 className="flex items-center gap-4 rounded-2xl glass p-5 text-left transition active:scale-[0.98] border border-transparent hover:border-white/10"
               >
-                <div className="w-12 h-12 rounded-xl grad-teal flex items-center justify-center shrink-0">
-                  <Wallet className="w-6 h-6 text-background" />
+                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.78 0.14 190)" }}>
+                  <Wallet className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold">Main Balance</div>
@@ -134,8 +134,8 @@ export function DepositSheet({
                 onClick={() => selectDest("vault")}
                 className="flex items-center gap-4 rounded-2xl glass p-5 text-left transition active:scale-[0.98] border border-transparent hover:border-white/10"
               >
-                <div className="w-12 h-12 rounded-xl grad-coral flex items-center justify-center shrink-0">
-                  <LayoutGrid className="w-6 h-6 text-background" />
+                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.74 0.18 25)" }}>
+                  <LayoutGrid className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold">Into a Vault</div>
@@ -165,7 +165,7 @@ export function DepositSheet({
                     onClick={() => selectVault(v)}
                     className="flex items-center gap-3 rounded-2xl glass p-4 text-left transition active:scale-[0.98]"
                   >
-                    <div className={`w-11 h-11 rounded-xl ${accentGrad[v.accent]} flex items-center justify-center shrink-0`} />
+                    <div className="w-11 h-11 rounded-xl shrink-0" style={{ background: accentColor[v.accent] }} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold truncate">{v.name}</span>
@@ -182,7 +182,7 @@ export function DepositSheet({
                       </div>
                       <div className="text-xs text-muted-foreground mt-0.5">{fmtSats(v.currentSats)} · {Math.round(p * 100)}% of goal</div>
                       <div className="mt-2 h-1 rounded-full bg-white/10 overflow-hidden">
-                        <div className={`h-full ${accentGrad[v.accent]} rounded-full`} style={{ width: `${Math.min(p * 100, 100)}%` }} />
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(p * 100, 100)}%`, background: accentColor[v.accent] }} />
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -204,13 +204,12 @@ export function DepositSheet({
 
             {/* Vault badge when coming from vault detail */}
             {dest === "vault" && selectedVault && (
-              <div className={`rounded-2xl p-4 ${accentGrad[selectedVault.accent]} relative overflow-hidden mb-5`}>
-                <div className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
-                <div className="relative flex items-center justify-between text-xs">
+              <div className="rounded-2xl p-4 bg-card border border-white/8 mb-5">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">Depositing into</span>
                   <span className="font-semibold text-foreground">{selectedVault.name}</span>
                 </div>
-                <div className="relative mt-1 text-xs text-muted-foreground flex items-center justify-between">
+                <div className="mt-1 text-xs text-muted-foreground flex items-center justify-between">
                   <span>Progress</span>
                   <span>{Math.round((selectedVault.currentSats / selectedVault.goalSats) * 100)}% of goal</span>
                 </div>
@@ -223,7 +222,7 @@ export function DepositSheet({
                 const active = tab === k;
                 return (
                   <button key={k} onClick={() => { setTab(k); setInvoiceReady(false); setLnAmount(""); }} className="relative flex-1 py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-medium">
-                    {active && <motion.div layoutId="dep-tab" className="absolute inset-0 grad-coral rounded-xl" />}
+                    {active && <motion.div layoutId="dep-tab" className="absolute inset-0 bg-primary rounded-xl" />}
                     <Icon className={`relative w-4 h-4 ${active ? "text-background" : "text-muted-foreground"}`} />
                     <span className={`relative ${active ? "text-background" : "text-muted-foreground"}`}>{label}</span>
                   </button>
@@ -238,7 +237,7 @@ export function DepositSheet({
                     <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Provider</div>
                     <div className="grid grid-cols-3 gap-2">
                       {PROVIDERS.map((p) => (
-                        <button key={p} onClick={() => setProvider(p)} className={`py-3 rounded-xl text-xs font-medium transition ${provider === p ? "grad-coral text-background" : "glass text-muted-foreground"}`}>{p}</button>
+                        <button key={p} onClick={() => setProvider(p)} className={`py-3 rounded-xl text-xs font-medium transition ${provider === p ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}>{p}</button>
                       ))}
                     </div>
                   </div>
@@ -279,7 +278,7 @@ export function DepositSheet({
                     )}
                     <div className="mt-2 flex gap-2">
                       {QUICK_AMOUNTS.map((v) => (
-                        <button key={v} onClick={() => setAmount(v)} className={`flex-1 py-2 rounded-xl text-xs transition ${amount === v ? "grad-coral text-background" : "glass text-muted-foreground"}`}>{v}</button>
+                        <button key={v} onClick={() => setAmount(v)} className={`flex-1 py-2 rounded-xl text-xs transition ${amount === v ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}>{v}</button>
                       ))}
                     </div>
                   </div>
@@ -287,7 +286,7 @@ export function DepositSheet({
                   <button
                     disabled={!canConfirm()}
                     onClick={confirm}
-                    className="w-full grad-btc text-background font-semibold py-4 rounded-2xl shadow-soft active:scale-[0.98] transition disabled:opacity-40"
+                    className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40"
                   >
                     Confirm deposit
                   </button>
@@ -317,7 +316,7 @@ export function DepositSheet({
                         <button
                           disabled={!lnAmount || Number(lnAmount) <= 0}
                           onClick={() => setInvoiceReady(true)}
-                          className="w-full flex items-center justify-center gap-2 grad-btc text-background font-semibold py-4 rounded-2xl shadow-soft active:scale-[0.98] transition disabled:opacity-40"
+                          className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40"
                         >
                           <QrCode className="w-4 h-4" /> Generate Invoice
                         </button>
@@ -347,7 +346,7 @@ export function DepositSheet({
                         <p className="text-xs text-muted-foreground text-center">Scan with any Lightning wallet or copy the invoice to pay.</p>
                         <button
                           onClick={() => setWalletPickerOpen((v) => !v)}
-                          className="w-full flex items-center justify-center gap-2 grad-btc text-background font-semibold py-4 rounded-2xl shadow-soft active:scale-[0.98] transition"
+                          className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition"
                         >
                           <Zap className="w-4 h-4" /> Pay Now
                         </button>
@@ -413,9 +412,10 @@ export function DepositSheet({
             <motion.div
               initial={{ scale: 0 }} animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, damping: 18, delay: 0.1 }}
-              className="w-20 h-20 rounded-full grad-mint flex items-center justify-center shadow-glow-teal"
+              className="w-20 h-20 rounded-full bg-card border border-white/8 flex items-center justify-center"
+              style={{ color: "oklch(0.86 0.13 160)" }}
             >
-              <Check className="w-10 h-10 text-background" strokeWidth={3} />
+              <Check className="w-10 h-10" strokeWidth={3} />
             </motion.div>
             <div className="text-xl font-semibold">Deposit confirmed</div>
             <div className="text-sm text-muted-foreground">Your stack just grew. Progress updated.</div>
@@ -442,7 +442,7 @@ export function DepositSheet({
                 </>
               )}
             </div>
-            <button onClick={reset} className="mt-2 w-full grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral">
+            <button onClick={reset} className="mt-2 w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl">
               Done
             </button>
           </motion.div>

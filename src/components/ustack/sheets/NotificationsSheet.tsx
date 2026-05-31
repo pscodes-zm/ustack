@@ -6,10 +6,10 @@ const iconMap = {
   milestone: Trophy, deposit: ArrowDownToLine, protection: ShieldCheck,
   summary: Sparkles, warning: AlertTriangle,
 } as const;
-const gradMap = {
-  milestone: "grad-mint", deposit: "grad-coral", protection: "grad-teal",
-  summary: "grad-btc", warning: "grad-coral",
-} as const;
+const colorMap: Record<string, string> = {
+  milestone: "oklch(0.86 0.13 160)", deposit: "oklch(0.74 0.18 25)", protection: "oklch(0.78 0.14 190)",
+  summary: "oklch(0.74 0.18 55)", warning: "oklch(0.74 0.18 25)",
+};
 
 export function NotificationsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   return (
@@ -19,8 +19,8 @@ export function NotificationsSheet({ open, onClose }: { open: boolean; onClose: 
           const Icon = iconMap[n.kind];
           return (
             <div key={n.id} className="rounded-2xl bg-card/60 p-4 flex items-start gap-3">
-              <div className={`w-10 h-10 rounded-xl ${gradMap[n.kind]} flex items-center justify-center shrink-0`}>
-                <Icon className="w-5 h-5 text-background" />
+              <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: colorMap[n.kind] }}>
+                <Icon className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">

@@ -126,7 +126,7 @@ export function SendSheet({ open, onClose }: { open: boolean; onClose: () => voi
             <button
               disabled={!canContinue}
               onClick={() => setStep("done")}
-              className="mt-6 w-full grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40"
+              className="mt-6 w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40"
             >
               Send
             </button>
@@ -138,9 +138,10 @@ export function SendSheet({ open, onClose }: { open: boolean; onClose: () => voi
             <motion.div
               initial={{ scale: 0 }} animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.1 }}
-              className="w-20 h-20 rounded-full grad-teal flex items-center justify-center"
+              className="w-20 h-20 rounded-full bg-card border border-white/8 flex items-center justify-center"
+              style={{ color: "oklch(0.78 0.14 190)" }}
             >
-              <CheckCircle2 className="w-10 h-10 text-background" />
+              <CheckCircle2 className="w-10 h-10" />
             </motion.div>
             <div className="text-lg font-semibold">Payment Sent</div>
             <div className="text-sm text-muted-foreground leading-relaxed">
@@ -164,7 +165,7 @@ export function SendSheet({ open, onClose }: { open: boolean; onClose: () => voi
               <div className="flex justify-between"><span>Method</span><span className="text-foreground font-medium">{method === "lightning" ? "Lightning" : "Mobile Money"}</span></div>
               <div className="flex justify-between"><span>Amount</span><span className="text-foreground font-medium">{fmtSats(Number(amount))}</span></div>
             </div>
-            <button onClick={reset} className="mt-2 w-full grad-teal text-primary-foreground font-semibold py-4 rounded-2xl">
+            <button onClick={reset} className="mt-2 w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl">
               Done
             </button>
           </motion.div>
@@ -177,9 +178,9 @@ export function SendSheet({ open, onClose }: { open: boolean; onClose: () => voi
 
 function MethodCard({ active, onClick, icon: Icon, label, sub }: { active: boolean; onClick: () => void; icon: typeof Zap; label: string; sub: string }) {
   return (
-    <button onClick={onClick} className={`rounded-2xl p-4 flex flex-col items-start gap-2 text-left transition border ${active ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent"}`}>
-      <div className={`w-10 h-10 rounded-xl ${active ? "grad-coral" : "bg-white/5"} flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${active ? "text-background" : ""}`} />
+    <button onClick={onClick} className={`rounded-2xl p-4 flex flex-col items-start gap-2 text-left transition border ${active ? "bg-card border-primary/50" : "bg-card/50 border-transparent"}`}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={active ? { background: "oklch(0.74 0.18 25)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
+        <Icon className="w-5 h-5" />
       </div>
       <div className="text-sm font-semibold">{label}</div>
       <div className="text-[10px] text-muted-foreground">{sub}</div>

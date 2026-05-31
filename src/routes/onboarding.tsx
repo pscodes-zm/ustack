@@ -41,7 +41,7 @@ function Onboarding() {
 
   return (
     <PhoneFrame>
-      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col px-7 pt-12 pb-8 grad-hero relative overflow-hidden">
+      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col px-7 pt-12 pb-8 bg-background relative overflow-hidden">
         <div className="flex justify-between items-center">
           <div className="text-xs text-muted-foreground">{i + 1} / {slides.length}</div>
           <Link to="/signup" className="text-sm text-muted-foreground">Skip</Link>
@@ -76,7 +76,7 @@ function Onboarding() {
           </div>
           <button
             onClick={next}
-            className="w-full grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition"
+            className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition"
           >
             {i < slides.length - 1 ? "Next" : "Create my account"}
           </button>
@@ -87,20 +87,13 @@ function Onboarding() {
 }
 
 function IllustrationArt({ kind, accent }: { kind: string; accent: "coral" | "teal" | "mint" }) {
-  const grad = accent === "coral" ? "var(--grad-coral)" : accent === "teal" ? "var(--grad-teal)" : "var(--grad-mint)";
+  const color = accent === "coral" ? "oklch(0.74 0.18 25)" : accent === "teal" ? "oklch(0.78 0.14 190)" : "oklch(0.86 0.13 160)";
   return (
     <div className="relative w-56 h-56">
-      <motion.div
-        className="absolute inset-0 rounded-full opacity-40 blur-3xl"
-        style={{ background: grad }}
-        animate={{ scale: [1, 1.1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-      />
       <div className="relative w-full h-full glass-strong rounded-[2.5rem] flex items-center justify-center">
         {kind === "vault" && (
           <svg viewBox="0 0 120 120" className="w-32 h-32">
-            <defs><linearGradient id="vg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="oklch(0.78 0.19 30)" /><stop offset="1" stopColor="oklch(0.68 0.21 10)" /></linearGradient></defs>
-            <rect x="20" y="28" width="80" height="72" rx="14" fill="url(#vg)" />
+            <rect x="20" y="28" width="80" height="72" rx="14" fill={color} />
             <circle cx="60" cy="64" r="18" stroke="white" strokeWidth="3" fill="none" />
             <circle cx="60" cy="64" r="4" fill="white" />
             <line x1="60" y1="48" x2="60" y2="44" stroke="white" strokeWidth="3" strokeLinecap="round" />
@@ -108,12 +101,11 @@ function IllustrationArt({ kind, accent }: { kind: string; accent: "coral" | "te
         )}
         {kind === "stack" && (
           <svg viewBox="0 0 120 120" className="w-32 h-32">
-            <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="oklch(0.82 0.14 195)" /><stop offset="1" stopColor="oklch(0.72 0.13 220)" /></linearGradient></defs>
             {[0,1,2,3].map(j => (
               <motion.rect
                 key={j}
                 x={28} y={88 - j*16} width={64} height={12} rx={6}
-                fill="url(#sg)"
+                fill={color}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1 - j*0.18, y: 0 }}
                 transition={{ delay: 0.1 + j*0.12 }}
@@ -123,8 +115,7 @@ function IllustrationArt({ kind, accent }: { kind: string; accent: "coral" | "te
         )}
         {kind === "shield" && (
           <svg viewBox="0 0 120 120" className="w-32 h-32">
-            <defs><linearGradient id="shg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="oklch(0.88 0.13 160)" /><stop offset="1" stopColor="oklch(0.78 0.14 190)" /></linearGradient></defs>
-            <path d="M60 20 L92 32 V62 C92 82 78 96 60 102 C42 96 28 82 28 62 V32 Z" fill="url(#shg)" />
+            <path d="M60 20 L92 32 V62 C92 82 78 96 60 102 C42 96 28 82 28 62 V32 Z" fill={color} />
             <path d="M48 62 L57 71 L74 54" stroke="white" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}

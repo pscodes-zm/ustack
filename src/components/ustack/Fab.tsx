@@ -53,7 +53,7 @@ export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
                   transition={{ type: "spring", stiffness: 320, damping: 22, delay: i * 0.04 }}
                   onClick={() => { setOpen(false); a.onClick(); }}
                   className="absolute left-1/2 top-1/2 flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full glass-strong"
-                  style={{ boxShadow: `0 10px 30px -10px ${a.color}` }}
+                  style={{ boxShadow: "none" }}
                 >
                   <a.Icon className="h-5 w-5" style={{ color: a.color }} />
                   <span className="absolute -bottom-6 whitespace-nowrap text-[10px] text-muted-foreground">
@@ -71,10 +71,7 @@ export function Fab({ onCreateVault, onAddFunds, onSend, onWithdraw }: {
           animate={{ rotate: open ? 135 : 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 18 }}
           className="relative grid h-16 w-16 place-items-center rounded-full"
-          style={{
-            background: "var(--grad-coral)",
-            boxShadow: "0 14px 40px -10px oklch(0.72 0.18 25 / 0.7), inset 0 1px 0 oklch(1 0 0 / 0.2)",
-          }}
+          style={{ background: "oklch(0.74 0.18 25)" }}
           aria-label={open ? "Close actions" : "Open actions"}
         >
           <Plus className="h-7 w-7 text-white" />

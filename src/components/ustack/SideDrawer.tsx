@@ -40,7 +40,7 @@ export function SideDrawer({ open, onClose, onSelect, onSettings, onHelp, onPric
       {open && (
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-          className="absolute inset-0 grad-hero z-0 flex flex-col"
+          className="absolute inset-0 bg-background z-0 flex flex-col"
         >
           <motion.div
             initial={{ x: -40, opacity: 0 }}

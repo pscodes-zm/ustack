@@ -38,14 +38,14 @@ function Auth() {
   if (step === "done") {
     return (
       <PhoneFrame>
-        <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-6 grad-hero">
+        <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-6 bg-background">
           <motion.div
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 200, damping: 16 }}
           >
-            <div className="w-24 h-24 rounded-full grad-teal flex items-center justify-center shadow-glow-teal">
-              <ShieldCheck className="w-12 h-12 text-background" />
+            <div className="w-24 h-24 rounded-full bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.78 0.14 190)" }}>
+              <ShieldCheck className="w-12 h-12" />
             </div>
           </motion.div>
           <motion.div
@@ -64,14 +64,8 @@ function Auth() {
 
   return (
     <PhoneFrame>
-      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col grad-hero">
-        {/* Glow blob */}
-        <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full opacity-25 blur-3xl pointer-events-none"
-          style={{ background: "var(--grad-coral)" }}
-        />
-
-        <div className="relative flex flex-col flex-1 px-7 pt-14 pb-10">
+      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col bg-background">
+        <div className="flex flex-col flex-1 px-7 pt-14 pb-10">
 
           {/* Back button */}
           <button
@@ -118,7 +112,7 @@ function Auth() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="+260 … or you@email.com"
-                      className="bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none focus:shadow-glow-coral transition"
+                      className="bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none transition"
                     />
                   </label>
                 </div>
@@ -142,7 +136,7 @@ function Auth() {
                 <button
                   onClick={handleContinue}
                   disabled={!phone}
-                  className="grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   Continue
                 </button>
@@ -221,7 +215,7 @@ function Auth() {
                 <button
                   onClick={handleLogin}
                   disabled={pin.length < 4 || loading}
-                  className="grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <motion.div

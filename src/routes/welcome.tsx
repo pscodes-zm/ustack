@@ -16,8 +16,7 @@ export const Route = createFileRoute("/welcome")({
 function Welcome() {
   return (
     <PhoneFrame>
-      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col px-7 pt-16 pb-10 grad-hero relative">
-        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full opacity-40 blur-3xl" style={{ background: "var(--grad-coral)" }} />
+      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col px-7 pt-16 pb-10 bg-background relative">
 
         <div className="relative flex flex-col items-center">
           <Logo size={48} />
@@ -51,7 +50,7 @@ function Welcome() {
         >
           <Link
             to="/onboarding"
-            className="grad-coral text-primary-foreground font-semibold py-4 rounded-2xl text-center shadow-glow-coral active:scale-[0.98] transition"
+            className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl text-center active:scale-[0.98] transition"
           >
             Get Started
           </Link>

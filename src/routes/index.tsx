@@ -25,7 +25,7 @@ function Splash() {
 
   return (
     <PhoneFrame>
-      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-8 grad-hero">
+      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-8 bg-background">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: [0.9, 1.04, 1], opacity: 1 }}
@@ -35,7 +35,7 @@ function Splash() {
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
-            <Logo size={96} glow />
+            <Logo size={96} />
           </motion.div>
         </motion.div>
         <motion.div

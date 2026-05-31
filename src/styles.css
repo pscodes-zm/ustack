@@ -75,16 +75,8 @@
   --aqua: oklch(0.78 0.12 220);
   --btc: oklch(0.74 0.18 55);
 
-  --grad-coral: linear-gradient(135deg, oklch(0.78 0.19 30), oklch(0.68 0.21 10));
-  --grad-teal: linear-gradient(135deg, oklch(0.82 0.14 195), oklch(0.72 0.13 220));
-  --grad-mint: linear-gradient(135deg, oklch(0.88 0.13 160), oklch(0.78 0.14 190));
-  --grad-hero: linear-gradient(140deg, oklch(0.28 0.04 280) 0%, oklch(0.22 0.03 260) 50%, oklch(0.18 0.02 240) 100%);
-  --grad-btc: linear-gradient(135deg, oklch(0.78 0.18 60), oklch(0.68 0.2 40));
-
-  --shadow-soft: 0 8px 24px -8px oklch(0 0 0 / 0.4), 0 2px 8px -2px oklch(0 0 0 / 0.2);
-  --shadow-glow-coral: 0 8px 32px -4px oklch(0.74 0.18 25 / 0.4);
-  --shadow-glow-teal: 0 8px 32px -4px oklch(0.78 0.14 190 / 0.3);
-  --shadow-float: 0 16px 48px -12px oklch(0 0 0 / 0.5);
+  --shadow-soft: 0 4px 16px -4px oklch(0 0 0 / 0.35);
+  --shadow-float: 0 8px 32px -8px oklch(0 0 0 / 0.45);
 }
 
 @layer base {
@@ -103,25 +95,18 @@
 
 @layer utilities {
   .glass {
-    background: color-mix(in oklab, var(--card) 70%, transparent);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    background: color-mix(in oklab, var(--card) 80%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid color-mix(in oklab, white 8%, transparent);
   }
   .glass-strong {
-    background: color-mix(in oklab, var(--card) 85%, transparent);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid color-mix(in oklab, white 10%, transparent);
+    background: color-mix(in oklab, var(--card) 92%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid color-mix(in oklab, white 8%, transparent);
   }
-  .grad-coral { background: var(--grad-coral); }
-  .grad-teal { background: var(--grad-teal); }
-  .grad-mint { background: var(--grad-mint); }
-  .grad-hero { background: var(--grad-hero); }
-  .grad-btc { background: var(--grad-btc); }
   .shadow-soft { box-shadow: var(--shadow-soft); }
-  .shadow-glow-coral { box-shadow: var(--shadow-glow-coral); }
-  .shadow-glow-teal { box-shadow: var(--shadow-glow-teal); }
   .shadow-float { box-shadow: var(--shadow-float); }
 
   .no-scrollbar::-webkit-scrollbar { display: none; }

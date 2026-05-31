@@ -27,10 +27,8 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
       {/* Balance card */}
       <motion.div
         initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-        className="relative rounded-3xl p-6 grad-hero overflow-hidden shadow-float border border-white/5"
+        className="relative rounded-3xl p-6 bg-card overflow-hidden shadow-soft border border-white/5"
       >
-        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full opacity-40 blur-3xl" style={{ background: "var(--grad-coral)" }} />
-        <div className="absolute -bottom-24 -left-10 w-48 h-48 rounded-full opacity-25 blur-3xl" style={{ background: "var(--grad-teal)" }} />
 
         <div className="relative flex items-center justify-between">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Total stack</div>
@@ -67,7 +65,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
               initial={{ width: 0 }}
               animate={{ width: `${(monthlyStackedSats / monthlyGoalSats) * 100}%` }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="h-full grad-coral"
+              className="h-full bg-primary"
             />
           </div>
         </div>
@@ -93,9 +91,9 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
 
       {/* Quick actions */}
       <div className="grid grid-cols-3 gap-3">
-        <QuickAction icon={ArrowDownToLine} label="Deposit" onClick={onDeposit} grad="grad-coral" />
-        <QuickAction icon={ArrowUpFromLine} label="Withdraw" onClick={onWithdraw} grad="grad-teal" />
-        <QuickAction icon={Send} label="Send" onClick={onSend} grad="grad-mint" />
+        <QuickAction icon={ArrowDownToLine} label="Deposit" onClick={onDeposit} accent="oklch(0.74 0.18 25)" />
+        <QuickAction icon={ArrowUpFromLine} label="Withdraw" onClick={onWithdraw} accent="oklch(0.78 0.14 190)" />
+        <QuickAction icon={Send} label="Send" onClick={onSend} accent="oklch(0.86 0.13 160)" />
       </div>
 
       {/* Vault carousel */}
@@ -137,7 +135,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
               className="relative pb-3 text-sm font-medium"
             >
               <span className={tab === k ? "text-foreground" : "text-muted-foreground"}>{label}</span>
-              {tab === k && <motion.div layoutId="tab-ind" className="absolute -bottom-px left-0 right-0 h-0.5 grad-coral rounded-full" />}
+              {tab === k && <motion.div layoutId="tab-ind" className="absolute -bottom-px left-0 right-0 h-0.5 bg-primary rounded-full" />}
             </button>
           ))}
         </div>
@@ -149,6 +147,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
             </div>
           )}
           {tab === "insights" && <Insights />}
+
           {tab === "tips" && (
             <div className="flex flex-col gap-3">
               {tips.map((t, i) => (
@@ -178,15 +177,15 @@ function Stat({ label, value, zmw, accent }: { label: string; value: string; zmw
   );
 }
 
-function QuickAction({ icon: Icon, label, onClick, grad }: { icon: typeof ArrowDownToLine; label: string; onClick: () => void; grad: string }) {
+function QuickAction({ icon: Icon, label, onClick, accent }: { icon: typeof ArrowDownToLine; label: string; onClick: () => void; accent: string }) {
   return (
     <motion.button
       whileTap={{ scale: 0.96 }}
       onClick={onClick}
       className="rounded-2xl glass-strong p-4 flex flex-col items-center gap-2"
     >
-      <div className={`w-10 h-10 rounded-xl ${grad} flex items-center justify-center`}>
-        <Icon className="w-5 h-5 text-background" />
+      <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: accent }}>
+        <Icon className="w-5 h-5" />
       </div>
       <span className="text-xs font-medium">{label}</span>
     </motion.button>
@@ -195,14 +194,14 @@ function QuickAction({ icon: Icon, label, onClick, grad }: { icon: typeof ArrowD
 
 import type { Activity as ActivityT } from "@/lib/ustack-data";
 function ActivityRow({ a }: { a: ActivityT }) {
-  const map: Record<string, string> = {
-    deposit: "grad-coral", milestone: "grad-mint", streak: "grad-btc",
-    protection: "grad-teal", withdraw: "grad-teal", vault: "grad-coral",
+  const colorMap: Record<string, string> = {
+    deposit: "oklch(0.74 0.18 25)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
+    protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.74 0.18 25)",
   };
   return (
     <div className="rounded-2xl bg-card/60 p-3.5 flex items-center gap-3">
-      <div className={`w-10 h-10 rounded-xl ${map[a.kind]} flex items-center justify-center`}>
-        <Flame className="w-4 h-4 text-background" />
+      <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: colorMap[a.kind] }}>
+        <Flame className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium truncate">{a.title}</div>
@@ -239,7 +238,7 @@ function Insights() {
               initial={{ height: 0 }}
               animate={{ height: `${h}%` }}
               transition={{ delay: i * 0.04, duration: 0.5 }}
-              className="flex-1 rounded-md grad-mint opacity-90"
+              className="flex-1 rounded-md bg-accent/60"
             />
           ))}
         </div>
@@ -296,8 +295,8 @@ function PriceTicker() {
       transition={{ delay: 0.15 }}
       className="rounded-2xl glass px-4 py-3.5 flex items-center gap-3"
     >
-      <div className="w-9 h-9 rounded-xl grad-btc flex items-center justify-center shrink-0">
-        <span className="text-background font-bold text-sm">₿</span>
+      <div className="w-9 h-9 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0">
+        <span className="font-bold text-sm" style={{ color: "oklch(0.74 0.18 55)" }}>₿</span>
       </div>
 
       <div className="flex-1 min-w-0">

@@ -11,8 +11,8 @@ import { vaults, availableSats, fmtSats, fmtZMW, type Vault } from "@/lib/ustack
 type Step = "source" | "vault" | "locked" | "amount" | "warning" | "done";
 type Source = "balance" | "vault";
 
-const accentGrad: Record<string, string> = {
-  coral: "grad-coral", teal: "grad-teal", mint: "grad-mint", aqua: "grad-teal", btc: "grad-btc",
+const accentColor: Record<string, string> = {
+  coral: "oklch(0.74 0.18 25)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)",
 };
 const PROVIDERS = ["Airtel", "MTN MoMo", "Zamtel"];
 
@@ -114,8 +114,8 @@ export function WithdrawSheet({
                 onClick={() => selectSource("balance")}
                 className="flex items-center gap-4 rounded-2xl glass p-5 text-left transition active:scale-[0.98] border border-transparent hover:border-white/10"
               >
-                <div className="w-12 h-12 rounded-xl grad-teal flex items-center justify-center shrink-0">
-                  <Wallet className="w-6 h-6 text-background" />
+                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.78 0.14 190)" }}>
+                  <Wallet className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold">Main Balance</div>
@@ -130,8 +130,8 @@ export function WithdrawSheet({
                 onClick={() => selectSource("vault")}
                 className="flex items-center gap-4 rounded-2xl glass p-5 text-left transition active:scale-[0.98] border border-transparent hover:border-white/10"
               >
-                <div className="w-12 h-12 rounded-xl grad-coral flex items-center justify-center shrink-0">
-                  <LayoutGrid className="w-6 h-6 text-background" />
+                <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: "oklch(0.74 0.18 25)" }}>
+                  <LayoutGrid className="w-6 h-6" />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-semibold">From a Vault</div>
@@ -157,7 +157,7 @@ export function WithdrawSheet({
                 const p = v.currentSats / v.goalSats;
                 return (
                   <button key={v.id} onClick={() => selectVault(v)} className="flex items-center gap-3 rounded-2xl glass p-4 text-left transition active:scale-[0.98]">
-                    <div className={`w-11 h-11 rounded-xl ${accentGrad[v.accent]} flex items-center justify-center shrink-0`} />
+                    <div className="w-11 h-11 rounded-xl shrink-0" style={{ background: accentColor[v.accent] }} />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-semibold truncate">{v.name}</span>
@@ -174,7 +174,7 @@ export function WithdrawSheet({
                       </div>
                       <div className="text-xs text-muted-foreground mt-0.5">{fmtSats(v.currentSats)} · {Math.round(p * 100)}% of goal</div>
                       <div className="mt-2 h-1 rounded-full bg-white/10 overflow-hidden">
-                        <div className={`h-full ${accentGrad[v.accent]} rounded-full`} style={{ width: `${Math.min(p * 100, 100)}%` }} />
+                        <div className="h-full rounded-full" style={{ width: `${Math.min(p * 100, 100)}%`, background: accentColor[v.accent] }} />
                       </div>
                     </div>
                     <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -189,17 +189,16 @@ export function WithdrawSheet({
         {step === "locked" && vault && (
           <motion.div key="locked" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             {vaultContext && (
-              <div className={`rounded-2xl p-4 ${accentGrad[vault.accent]} relative overflow-hidden mb-5`}>
-                <div className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
-                <div className="relative text-xs text-muted-foreground flex items-center justify-between">
+              <div className="rounded-2xl p-4 bg-card border border-white/8 mb-5">
+                <div className="text-xs text-muted-foreground flex items-center justify-between">
                   <span>Vault</span>
                   <span className="font-semibold text-foreground">{vault.name}</span>
                 </div>
               </div>
             )}
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5 flex flex-col items-center text-center gap-3">
-              <div className="w-16 h-16 rounded-2xl grad-coral flex items-center justify-center">
-                <Lock className="w-8 h-8 text-background" />
+              <div className="w-16 h-16 rounded-2xl bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.74 0.18 25)" }}>
+                <Lock className="w-8 h-8" />
               </div>
               <div className="text-base font-semibold">This vault is locked</div>
               <div className="text-sm text-muted-foreground leading-relaxed">
@@ -217,7 +216,7 @@ export function WithdrawSheet({
             </div>
             <button
               onClick={vaultContext ? reset : () => setStep("vault")}
-              className="mt-5 w-full flex items-center justify-center gap-2 grad-teal text-primary-foreground font-semibold py-4 rounded-2xl"
+              className="mt-5 w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-semibold py-4 rounded-2xl"
             >
               Keep Stacking
             </button>
@@ -238,13 +237,12 @@ export function WithdrawSheet({
 
             {/* Vault badge when coming from vault detail */}
             {vault && (
-              <div className={`rounded-2xl p-4 ${accentGrad[vault.accent]} relative overflow-hidden mb-5`}>
-                <div className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
-                <div className="relative flex items-center justify-between text-xs">
+              <div className="rounded-2xl p-4 bg-card border border-white/8 mb-5">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">Withdrawing from</span>
                   <span className="font-semibold text-foreground">{vault.name}</span>
                 </div>
-                <div className="relative mt-1 flex items-center justify-between text-xs text-muted-foreground">
+                <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
                   <span>Available</span>
                   <span>{fmtSats(vault.currentSats)} sats</span>
                 </div>
@@ -291,7 +289,7 @@ export function WithdrawSheet({
                   <button
                     disabled={!canContinue()}
                     onClick={() => isEarly ? setStep("warning") : setStep("done")}
-                    className="w-full grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40"
+                    className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40"
                   >
                     Continue
                   </button>
@@ -302,7 +300,7 @@ export function WithdrawSheet({
                     <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Provider</div>
                     <div className="grid grid-cols-3 gap-2">
                       {PROVIDERS.map((p) => (
-                        <button key={p} onClick={() => setProvider(p)} className={`py-3 rounded-xl text-xs font-medium transition ${provider === p ? "grad-coral text-background" : "glass text-muted-foreground"}`}>{p}</button>
+                        <button key={p} onClick={() => setProvider(p)} className={`py-3 rounded-xl text-xs font-medium transition ${provider === p ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}>{p}</button>
                       ))}
                     </div>
                   </div>
@@ -327,7 +325,7 @@ export function WithdrawSheet({
                   <button
                     disabled={!canContinue()}
                     onClick={() => isEarly ? setStep("warning") : setStep("done")}
-                    className="w-full grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40"
+                    className="w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40"
                   >
                     Continue
                   </button>
@@ -368,9 +366,10 @@ export function WithdrawSheet({
             <motion.div
               initial={{ scale: 0 }} animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 18, delay: 0.1 }}
-              className="w-20 h-20 rounded-full grad-teal flex items-center justify-center"
+              className="w-20 h-20 rounded-full bg-card border border-white/8 flex items-center justify-center"
+              style={{ color: "oklch(0.78 0.14 190)" }}
             >
-              <CheckCircle2 className="w-10 h-10 text-background" />
+              <CheckCircle2 className="w-10 h-10" />
             </motion.div>
             <div className="text-lg font-semibold">Withdrawal Initiated</div>
             <div className="text-sm text-muted-foreground">
@@ -388,7 +387,7 @@ export function WithdrawSheet({
               <div className="h-px bg-white/10" />
               <div className="flex justify-between"><span>Amount</span><span className="text-foreground font-medium">{fmtSats(receiveAmount)}</span></div>
             </div>
-            <button onClick={reset} className="mt-2 w-full grad-teal text-primary-foreground font-semibold py-4 rounded-2xl">Done</button>
+            <button onClick={reset} className="mt-2 w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl">Done</button>
           </motion.div>
         )}
 
@@ -434,9 +433,9 @@ function EarlyWarningBadge({ pct }: { pct: number }) {
 
 function MethodCard({ active, onClick, icon: Icon, label, sub }: { active: boolean; onClick: () => void; icon: typeof Zap; label: string; sub: string }) {
   return (
-    <button onClick={onClick} className={`rounded-2xl p-4 flex flex-col items-start gap-2 text-left transition border ${active ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent"}`}>
-      <div className={`w-10 h-10 rounded-xl ${active ? "grad-coral" : "bg-white/5"} flex items-center justify-center`}>
-        <Icon className={`w-5 h-5 ${active ? "text-background" : ""}`} />
+    <button onClick={onClick} className={`rounded-2xl p-4 flex flex-col items-start gap-2 text-left transition border ${active ? "bg-card border-primary/50" : "bg-card/50 border-transparent"}`}>
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center`} style={active ? { background: "oklch(0.74 0.18 25)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
+        <Icon className="w-5 h-5" />
       </div>
       <div className="text-sm font-semibold">{label}</div>
       <div className="text-[10px] text-muted-foreground">{sub}</div>

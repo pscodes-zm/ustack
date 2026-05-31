@@ -17,7 +17,7 @@ export function ProfileScreen({ onEdit, onSettings, onHelp, onLogout }: {
 
       {/* Profile header */}
       <div className="rounded-3xl glass-strong p-5 flex items-center gap-4">
-        <div className="w-16 h-16 rounded-2xl grad-mint flex items-center justify-center text-background text-xl font-semibold">NK</div>
+        <div className="w-16 h-16 rounded-2xl bg-card border border-white/8 flex items-center justify-center text-xl font-semibold" style={{ color: "oklch(0.86 0.13 160)" }}>NK</div>
         <div className="flex-1">
           <div className="text-lg font-semibold">Norman K.</div>
           <div className="text-xs text-muted-foreground">@norman · +260 ••• 4421</div>
@@ -28,8 +28,8 @@ export function ProfileScreen({ onEdit, onSettings, onHelp, onLogout }: {
       </div>
 
       {/* Price Protection card */}
-      <div className="rounded-3xl grad-hero p-5 relative overflow-hidden border border-white/5">
-        <div className="absolute -top-20 -right-20 w-56 h-56 rounded-full opacity-30 blur-3xl grad-teal" />
+      <div className="rounded-3xl bg-card border border-white/8 p-5">
+        
         <div className="relative flex items-start justify-between">
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground">Price Protection</div>
@@ -45,7 +45,7 @@ export function ProfileScreen({ onEdit, onSettings, onHelp, onLogout }: {
             <button
               key={v}
               onClick={() => setThreshold(v)}
-              className={`flex-1 py-2 rounded-xl text-xs font-semibold transition ${threshold === v ? "grad-teal text-background" : "glass text-muted-foreground"}`}
+              className={`flex-1 py-2 rounded-xl text-xs font-semibold transition ${threshold === v ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}
             >
               {v}%
             </button>
@@ -106,7 +106,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
   return (
     <button
       onClick={(e) => { e.stopPropagation(); onChange(!on); }}
-      className={`w-12 h-7 rounded-full p-0.5 transition shrink-0 ${on ? "grad-coral" : "bg-white/10"}`}
+      className={`w-12 h-7 rounded-full p-0.5 transition shrink-0 ${on ? "bg-primary" : "bg-white/10"}`}
     >
       <motion.div layout className={`w-6 h-6 rounded-full bg-white shadow ${on ? "ml-auto" : ""}`} />
     </button>

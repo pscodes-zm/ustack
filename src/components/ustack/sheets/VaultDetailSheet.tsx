@@ -4,7 +4,7 @@ import { ProgressRing } from "../ProgressRing";
 import type { Vault } from "@/lib/ustack-data";
 import { fmtZMW } from "@/lib/ustack-data";
 
-const gradMap = { coral: "grad-coral", teal: "grad-teal", mint: "grad-mint", aqua: "grad-teal", btc: "grad-btc" } as const;
+const accentMap = { coral: "oklch(0.74 0.18 25)", teal: "oklch(0.78 0.14 190)", mint: "oklch(0.86 0.13 160)", aqua: "oklch(0.78 0.14 190)", btc: "oklch(0.74 0.18 55)" } as const;
 
 export function VaultDetailSheet({ open, vault, onClose, onDeposit, onWithdraw }: {
   open: boolean; vault: Vault | null; onClose: () => void; onDeposit: () => void; onWithdraw: () => void;
@@ -13,9 +13,8 @@ export function VaultDetailSheet({ open, vault, onClose, onDeposit, onWithdraw }
   const pct = vault.currentSats / vault.goalSats;
   return (
     <Sheet open={open} onClose={onClose} title={vault.name}>
-      <div className={`relative rounded-3xl p-6 ${gradMap[vault.accent]} overflow-hidden shadow-float`}>
-        <div className="absolute inset-0 bg-background/50 backdrop-blur-xl" />
-        <div className="relative flex items-center gap-5">
+      <div className="relative rounded-3xl p-6 bg-card overflow-hidden shadow-soft border border-white/5">
+        <div className="flex items-center gap-5">
           <ProgressRing value={pct} size={112} stroke={10} accent={vault.accent}>
             <div className="text-center">
               <div className="text-2xl font-semibold tabular-nums">{Math.round(pct * 100)}%</div>
@@ -61,7 +60,7 @@ export function VaultDetailSheet({ open, vault, onClose, onDeposit, onWithdraw }
       </div>
 
       <div className="mt-8 flex gap-3">
-        <button onClick={onDeposit} className="flex-1 grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral flex items-center justify-center gap-2">
+        <button onClick={onDeposit} className="flex-1 bg-primary text-primary-foreground font-semibold py-4 rounded-2xl flex items-center justify-center gap-2">
           <ArrowDownToLine className="w-4 h-4" /> Deposit
         </button>
         <button onClick={onWithdraw} className="flex-1 glass font-semibold py-4 rounded-2xl flex items-center justify-center gap-2">

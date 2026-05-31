@@ -29,7 +29,7 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
       <div className="flex gap-1.5 mb-6">
         {Array.from({ length: total }).map((_, i) => (
           <div key={i} className="flex-1 h-1 rounded-full bg-white/10 overflow-hidden">
-            <motion.div animate={{ width: i <= step ? "100%" : "0%" }} className="h-full grad-coral" />
+            <motion.div animate={{ width: i <= step ? "100%" : "0%" }} className="h-full bg-primary" />
           </div>
         ))}
       </div>
@@ -48,13 +48,13 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
               <div className="flex flex-col gap-3">
                 <TypeCard
                   active={type === "hodl"} onClick={() => setType("hodl")}
-                  icon={Lock} grad="grad-coral"
+                  icon={Lock} iconColor="oklch(0.74 0.18 25)"
                   title="Hodl Vault"
                   sub="Lock sats for a set time period, e.g. 6 months. Funds are frozen until the lock expires."
                 />
                 <TypeCard
                   active={type === "stack"} onClick={() => setType("stack")}
-                  icon={TrendingUp} grad="grad-teal"
+                  icon={TrendingUp} iconColor="oklch(0.78 0.14 190)"
                   title="Stack Vault"
                   sub="Stack until you hit a target amount, e.g. 1,000,000 sats. Withdraw anytime with a small penalty."
                 />
@@ -71,7 +71,7 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
                 autoFocus
                 value={name} onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. School Fees"
-                className="mt-5 w-full bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none focus:shadow-glow-coral transition"
+                className="mt-5 w-full bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none transition"
               />
               <div className="mt-3 flex flex-wrap gap-2">
                 {["School Fees", "Future Business", "Emergency", "New Laptop"].map((s) => (
@@ -122,10 +122,10 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
                   <button
                     key={opt.months}
                     onClick={() => setLockMonths(opt.months)}
-                    className={`flex items-center gap-4 rounded-2xl p-4 text-left border transition ${lockMonths === opt.months ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent glass"}`}
+                    className={`flex items-center gap-4 rounded-2xl p-4 text-left border transition ${lockMonths === opt.months ? "bg-card border-primary/50" : "bg-card/50 border-transparent glass"}`}
                   >
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${lockMonths === opt.months ? "grad-coral" : "bg-white/5"}`}>
-                      <Clock className={`w-5 h-5 ${lockMonths === opt.months ? "text-background" : ""}`} />
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={lockMonths === opt.months ? { background: "oklch(0.74 0.18 25)", color: "white" } : { background: "oklch(1 0 0 / 0.05)" }}>
+                      <Clock className="w-5 h-5" />
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-semibold">{opt.label}</div>
@@ -185,11 +185,11 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
           </button>
         )}
         {step < total - 1 ? (
-          <button onClick={next} className="flex-1 grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition flex items-center justify-center gap-2">
+          <button onClick={next} className="flex-1 bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition flex items-center justify-center gap-2">
             Continue <ChevronRight className="w-4 h-4" />
           </button>
         ) : (
-          <button onClick={() => { close(); setTimeout(onDeposit, 400); }} className="flex-1 grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition flex items-center justify-center gap-2">
+          <button onClick={() => { close(); setTimeout(onDeposit, 400); }} className="flex-1 bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition flex items-center justify-center gap-2">
             <Sparkles className="w-4 h-4" /> Create Vault
           </button>
         )}
@@ -198,11 +198,11 @@ export function CreateVaultSheet({ open, onClose, onDeposit }: { open: boolean; 
   );
 }
 
-function TypeCard({ active, onClick, icon: Icon, title, sub, grad }: { active: boolean; onClick: () => void; icon: typeof Lock; title: string; sub: string; grad: string }) {
+function TypeCard({ active, onClick, icon: Icon, title, sub, iconColor }: { active: boolean; onClick: () => void; icon: typeof Lock; title: string; sub: string; iconColor: string }) {
   return (
-    <button onClick={onClick} className={`rounded-2xl p-4 flex items-start gap-4 text-left transition border ${active ? "bg-card border-primary/50 shadow-glow-coral" : "bg-card/50 border-transparent"}`}>
-      <div className={`w-12 h-12 rounded-xl ${grad} flex items-center justify-center shrink-0`}>
-        <Icon className="w-5 h-5 text-background" />
+    <button onClick={onClick} className={`rounded-2xl p-4 flex items-start gap-4 text-left transition border ${active ? "bg-card border-primary/50" : "bg-card/50 border-transparent"}`}>
+      <div className="w-12 h-12 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: iconColor }}>
+        <Icon className="w-5 h-5" />
       </div>
       <div className="flex-1">
         <div className="text-sm font-semibold">{title}</div>

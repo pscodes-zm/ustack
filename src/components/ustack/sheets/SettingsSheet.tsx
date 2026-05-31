@@ -49,7 +49,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
                   <button
                     key={c}
                     onClick={() => setCurrency(c)}
-                    className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition ${currency === c ? "grad-coral text-background" : "glass text-muted-foreground"}`}
+                    className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition ${currency === c ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"}`}
                   >
                     {c}
                   </button>
@@ -111,11 +111,11 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
             </>
           ) : (
             <div className="py-10 flex flex-col items-center gap-4">
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-20 h-20 rounded-full grad-mint flex items-center justify-center shadow-glow-teal">
-                <Check className="w-10 h-10 text-background" strokeWidth={3} />
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="w-20 h-20 rounded-full bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.86 0.13 160)" }}>
+                <Check className="w-10 h-10" strokeWidth={3} />
               </motion.div>
               <div className="text-lg font-semibold">PIN updated</div>
-              <button onClick={close} className="mt-4 w-full grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral">Done</button>
+              <button onClick={close} className="mt-4 w-full bg-primary text-primary-foreground font-semibold py-4 rounded-2xl">Done</button>
             </div>
           )}
         </div>
@@ -162,7 +162,7 @@ function Row({ icon: Icon, label, right, onClick }: { icon: typeof Bell; label: 
 
 function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void }) {
   return (
-    <button onClick={(e) => { e.stopPropagation(); onChange(!on); }} className={`w-12 h-7 rounded-full p-0.5 transition shrink-0 ${on ? "grad-coral" : "bg-white/10"}`}>
+    <button onClick={(e) => { e.stopPropagation(); onChange(!on); }} className={`w-12 h-7 rounded-full p-0.5 transition shrink-0 ${on ? "bg-primary" : "bg-white/10"}`}>
       <motion.div layout className={`w-6 h-6 rounded-full bg-white shadow ${on ? "ml-auto" : ""}`} />
     </button>
   );

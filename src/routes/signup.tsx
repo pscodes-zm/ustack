@@ -33,14 +33,14 @@ function Signup() {
     setTimeout(() => nav({ to: "/app" }), 1600);
     return (
       <PhoneFrame>
-        <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-6 grad-hero">
+        <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-6 bg-background">
           <motion.div
             initial={{ scale: 0.4, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 180, damping: 14 }}
           >
-            <div className="w-28 h-28 rounded-full grad-mint flex items-center justify-center shadow-glow-teal">
-              <ShieldCheck className="w-14 h-14 text-background" />
+            <div className="w-28 h-28 rounded-full bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.86 0.13 160)" }}>
+              <ShieldCheck className="w-14 h-14" />
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-center">
@@ -54,10 +54,8 @@ function Signup() {
 
   return (
     <PhoneFrame>
-      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col grad-hero relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full opacity-20 blur-3xl pointer-events-none" style={{ background: "var(--grad-teal)" }} />
-
-        <div className="relative flex flex-col flex-1 px-7 pt-14 pb-10">
+      <div className="h-full min-h-screen md:min-h-[860px] flex flex-col bg-background">
+        <div className="flex flex-col flex-1 px-7 pt-14 pb-10">
           <button onClick={goBack} className="w-10 h-10 rounded-full glass flex items-center justify-center self-start">
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -107,7 +105,7 @@ function Signup() {
                 <button
                   onClick={() => setStep("otp")}
                   disabled={!username || !phone}
-                  className="grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   Continue <ChevronRight className="w-4 h-4" />
                 </button>
@@ -141,7 +139,7 @@ function Signup() {
                         const next = document.getElementById(`otp-${idx + 1}`);
                         if (e.target.value && next) (next as HTMLInputElement).focus();
                       }}
-                      className="w-16 h-20 text-center text-2xl font-semibold rounded-2xl bg-card border border-border focus:border-primary focus:outline-none focus:shadow-glow-coral transition"
+                      className="w-16 h-20 text-center text-2xl font-semibold rounded-2xl bg-card border border-border focus:border-primary focus:outline-none transition"
                     />
                   ))}
                 </div>
@@ -152,7 +150,7 @@ function Signup() {
                 <button
                   onClick={() => setStep("pin")}
                   disabled={otp.some((v) => !v)}
-                  className="grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40 flex items-center justify-center gap-2"
+                  className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 flex items-center justify-center gap-2"
                 >
                   Verify <ChevronRight className="w-4 h-4" />
                 </button>
@@ -200,7 +198,7 @@ function Signup() {
                 <button
                   onClick={() => setStep("done")}
                   disabled={pin.length < 4}
-                  className="grad-coral text-primary-foreground font-semibold py-4 rounded-2xl shadow-glow-coral active:scale-[0.98] transition disabled:opacity-40 flex items-center justify-center gap-2"
+                  className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 flex items-center justify-center gap-2"
                 >
                   Create account <ChevronRight className="w-4 h-4" />
                 </button>
@@ -222,7 +220,7 @@ function Field({ label, placeholder, value, onChange }: { label: string; placeho
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none focus:shadow-glow-coral transition"
+        className="bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none transition"
       />
     </label>
   );
