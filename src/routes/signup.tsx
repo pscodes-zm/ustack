@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ArrowLeft, ShieldCheck, ChevronRight } from "lucide-react";
 import { PhoneFrame } from "@/components/ustack/PhoneFrame";
 import { Logo } from "@/components/ustack/Logo";
+import { requestOtp, verifyOtp } from "@/lib/api/auth.functions";
+import { useAuth } from "@/lib/context/auth-context";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -17,34 +19,61 @@ export const Route = createFileRoute("/signup")({
 
 function Signup() {
   const nav = useNavigate();
-  const [step, setStep] = useState<"details" | "otp" | "pin" | "done">("details");
+  const { login } = useAuth();
+  const [step, setStep] = useState<"details" | "otp" | "done">("details");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState(["", "", "", ""]);
-  const [pin, setPin] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [devCode, setDevCode] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const goBack = () => {
-    if (step === "otp") setStep("details");
-    else if (step === "pin") setStep("otp");
+    if (step === "otp") { setStep("details"); setError(""); }
     else nav({ to: "/onboarding" });
   };
 
+  const handleSendOtp = async () => {
+    if (!username.trim() || !phone.trim()) return;
+    setError(""); setLoading(true);
+    try {
+      const res = await requestOtp({ data: { phone } });
+      setDevCode(res.devCode ?? null);
+      setStep("otp");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to send code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    const code = otp.join("");
+    if (code.length < 6) return;
+    setError(""); setLoading(true);
+    try {
+      const res = await verifyOtp({ data: { phone, code, username: username.trim() } });
+      login(res.accessToken, res.refreshToken, res.user);
+      setStep("done");
+      setTimeout(() => nav({ to: "/app" }), 1600);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Invalid code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (step === "done") {
-    setTimeout(() => nav({ to: "/app" }), 1600);
     return (
       <PhoneFrame>
         <div className="h-full min-h-screen md:min-h-[860px] flex flex-col items-center justify-center gap-6 bg-background">
-          <motion.div
-            initial={{ scale: 0.4, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 180, damping: 14 }}
-          >
+          <motion.div initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 180, damping: 14 }}>
             <div className="w-28 h-28 rounded-full bg-card border border-white/8 flex items-center justify-center" style={{ color: "oklch(0.86 0.13 160)" }}>
               <ShieldCheck className="w-14 h-14" />
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="text-center">
-            <div className="text-2xl font-semibold">You're in, {username || "stacker"}!</div>
+            <div className="text-2xl font-semibold">You're in, {username}!</div>
             <div className="text-sm text-muted-foreground mt-1">Building your first vault…</div>
           </motion.div>
         </div>
@@ -67,9 +96,8 @@ function Signup() {
 
           {/* Progress dots */}
           <div className="flex gap-2 mt-6">
-            {(["details", "otp", "pin"] as const).map((s, i) => {
-              const steps = ["details", "otp", "pin"];
-              const idx = steps.indexOf(step);
+            {(["details", "otp"] as const).map((s, i) => {
+              const idx = ["details", "otp"].indexOf(step);
               return (
                 <motion.div
                   key={s}
@@ -82,7 +110,6 @@ function Signup() {
           </div>
 
           <AnimatePresence mode="wait">
-
             {/* Step 1 — Details */}
             {step === "details" && (
               <motion.div key="details" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.28 }} className="flex flex-col flex-1">
@@ -90,24 +117,21 @@ function Signup() {
                   <h1 className="text-[2rem] font-semibold tracking-tight leading-tight">Create your<br />account</h1>
                   <p className="mt-2 text-muted-foreground text-sm">Minimal data. Maximum privacy.</p>
                 </div>
-
                 <div className="mt-8 flex flex-col gap-4">
                   <Field label="Username" placeholder="@yourname" value={username} onChange={setUsername} />
-                  <Field label="Phone number" placeholder="+260 …" value={phone} onChange={setPhone} />
+                  <Field label="Phone number" placeholder="+260 …" value={phone} onChange={setPhone} type="tel" />
                 </div>
-
                 <div className="mt-5 glass rounded-2xl p-4 text-xs text-muted-foreground leading-relaxed">
                   We never sell your data. No aggressive KYC, just what's needed to keep your stack safe.
                 </div>
-
+                {error && <p className="mt-3 text-sm text-destructive text-center">{error}</p>}
                 <div className="flex-1" />
-
                 <button
-                  onClick={() => setStep("otp")}
-                  disabled={!username || !phone}
+                  onClick={handleSendOtp}
+                  disabled={!username || !phone || loading}
                   className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  Continue <ChevronRight className="w-4 h-4" />
+                  {loading ? <Spinner /> : <><span>Continue</span><ChevronRight className="w-4 h-4" /></>}
                 </button>
                 <p className="mt-4 text-center text-sm text-muted-foreground">
                   Already have an account?{" "}
@@ -121,10 +145,18 @@ function Signup() {
               <motion.div key="otp" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.28 }} className="flex flex-col flex-1">
                 <div className="mt-6">
                   <h1 className="text-[2rem] font-semibold tracking-tight leading-tight">Verify your<br />number</h1>
-                  <p className="mt-2 text-muted-foreground text-sm">Enter the 4-digit code sent to {phone || "your phone"}.</p>
+                  <p className="mt-2 text-muted-foreground text-sm">Enter the 6-digit code for {phone}.</p>
                 </div>
 
-                <div className="mt-12 flex gap-3 justify-center">
+                {/* Dev hint */}
+                {devCode && (
+                  <div className="mt-4 glass rounded-xl px-4 py-2.5 flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">Dev code:</span>
+                    <span className="font-mono font-bold text-primary tracking-widest">{devCode}</span>
+                  </div>
+                )}
+
+                <div className="mt-10 flex gap-2 justify-center">
                   {otp.map((v, idx) => (
                     <input
                       key={idx}
@@ -132,79 +164,54 @@ function Signup() {
                       inputMode="numeric"
                       maxLength={1}
                       value={v}
+                      autoFocus={idx === 0}
                       onChange={(e) => {
                         const nv = [...otp];
-                        nv[idx] = e.target.value.slice(-1);
+                        nv[idx] = e.target.value.replace(/\D/g, "").slice(-1);
                         setOtp(nv);
-                        const next = document.getElementById(`otp-${idx + 1}`);
-                        if (e.target.value && next) (next as HTMLInputElement).focus();
+                        if (e.target.value && idx < 5) {
+                          (document.getElementById(`otp-${idx + 1}`) as HTMLInputElement)?.focus();
+                        }
+                        if (idx === 5 && e.target.value) {
+                          // auto-submit when last digit entered
+                          setTimeout(() => {
+                            const code = [...nv].join("");
+                            if (code.length === 6) handleVerify();
+                          }, 100);
+                        }
                       }}
-                      className="w-16 h-20 text-center text-2xl font-semibold rounded-2xl bg-card border border-border focus:border-primary focus:outline-none transition"
-                    />
-                  ))}
-                </div>
-                <div className="mt-4 text-center text-sm text-muted-foreground">Resend code in 0:42</div>
-
-                <div className="flex-1" />
-
-                <button
-                  onClick={() => setStep("pin")}
-                  disabled={otp.some((v) => !v)}
-                  className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 flex items-center justify-center gap-2"
-                >
-                  Verify <ChevronRight className="w-4 h-4" />
-                </button>
-              </motion.div>
-            )}
-
-            {/* Step 3 — Set PIN */}
-            {step === "pin" && (
-              <motion.div key="pin" initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }} transition={{ duration: 0.28 }} className="flex flex-col flex-1">
-                <div className="mt-6">
-                  <h1 className="text-[2rem] font-semibold tracking-tight leading-tight">Set your PIN</h1>
-                  <p className="mt-2 text-muted-foreground text-sm">You'll use this every time you open UStack.</p>
-                </div>
-
-                <div className="mt-10 flex justify-center gap-4">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <motion.div
-                      key={i}
-                      animate={{ scale: pin.length === i + 1 ? [1, 1.35, 1] : 1, background: i < pin.length ? "oklch(0.73 0.19 55)" : "oklch(0.3 0.01 260)" }}
-                      transition={{ duration: 0.18 }}
-                      className="w-4 h-4 rounded-full"
+                      onKeyDown={(e) => {
+                        if (e.key === "Backspace" && !v && idx > 0) {
+                          (document.getElementById(`otp-${idx - 1}`) as HTMLInputElement)?.focus();
+                        }
+                      }}
+                      className="w-12 h-14 text-center text-xl font-semibold rounded-2xl bg-card border border-border focus:border-primary focus:outline-none transition"
                     />
                   ))}
                 </div>
 
-                <div className="mt-8 grid grid-cols-3 gap-3 px-4">
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, "", 0, "⌫"].map((k, i) => (
-                    <button
-                      key={i}
-                      disabled={k === ""}
-                      onClick={() => {
-                        if (k === "⌫") { setPin((p) => p.slice(0, -1)); return; }
-                        if (k === "") return;
-                        if (pin.length < 6) setPin((p) => p + k);
-                      }}
-                      className={`h-16 rounded-2xl text-xl font-semibold flex items-center justify-center transition active:scale-95 ${k === "" ? "invisible" : "glass hover:bg-white/10"}`}
-                    >
-                      {k}
-                    </button>
-                  ))}
+                {error && <p className="mt-4 text-sm text-destructive text-center">{error}</p>}
+
+                <div className="mt-4 text-center">
+                  <button
+                    onClick={handleSendOtp}
+                    className="text-sm text-[oklch(0.82_0.13_190)] font-medium"
+                  >
+                    Resend code
+                  </button>
                 </div>
 
                 <div className="flex-1" />
 
                 <button
-                  onClick={() => setStep("done")}
-                  disabled={pin.length < 4}
+                  onClick={handleVerify}
+                  disabled={otp.some((v) => !v) || loading}
                   className="bg-primary text-primary-foreground font-semibold py-4 rounded-2xl active:scale-[0.98] transition disabled:opacity-40 flex items-center justify-center gap-2"
                 >
-                  Create account <ChevronRight className="w-4 h-4" />
+                  {loading ? <Spinner /> : <><span>Verify & Create Account</span><ChevronRight className="w-4 h-4" /></>}
                 </button>
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
       </div>
@@ -212,16 +219,30 @@ function Signup() {
   );
 }
 
-function Field({ label, placeholder, value, onChange }: { label: string; placeholder: string; value: string; onChange: (v: string) => void }) {
+function Field({ label, placeholder, value, onChange, type = "text" }: {
+  label: string; placeholder: string; value: string;
+  onChange: (v: string) => void; type?: string;
+}) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{label}</span>
       <input
+        type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="bg-card border border-border rounded-2xl px-4 py-4 text-base focus:border-primary focus:outline-none transition"
       />
     </label>
+  );
+}
+
+function Spinner() {
+  return (
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+      className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white"
+    />
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "@tanstack/react-router";
 import { TopBar } from "./TopBar";
@@ -18,6 +18,7 @@ import { VaultDetailSheet } from "./sheets/VaultDetailSheet";
 import { SettingsSheet } from "./sheets/SettingsSheet";
 import { HelpSheet } from "./sheets/HelpSheet";
 import { EditProfileSheet } from "./sheets/EditProfileSheet";
+import { useAuth } from "@/lib/context/auth-context";
 import type { Vault } from "@/lib/ustack-data";
 
 export type SheetKind =
@@ -34,6 +35,7 @@ export type SheetKind =
 
 export function AppShell() {
   const nav = useNavigate();
+  const { isAuthenticated, loading, logout: authLogout } = useAuth();
   const [tab, setTab] = useState<Tab>("home");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [sheet, setSheet] = useState<SheetKind>(null);
@@ -41,8 +43,16 @@ export function AppShell() {
   const [depositVault, setDepositVault] = useState<Vault | null>(null);
   const [withdrawVault, setWithdrawVault] = useState<Vault | null>(null);
 
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      nav({ to: "/auth" });
+    }
+  }, [loading, isAuthenticated, nav]);
+
   const openVault = (v: Vault) => { setActiveVault(v); setSheet("vaultDetail"); };
-  const logout = () => nav({ to: "/welcome" });
+  const logout = () => { authLogout(); nav({ to: "/welcome" }); };
+
+  if (loading || !isAuthenticated) return null;
 
   const openDeposit = (vault?: Vault) => {
     setDepositVault(vault ?? null);

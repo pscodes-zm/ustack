@@ -1,10 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import { ArrowDownToLine, ArrowUpFromLine, Send, Eye, EyeOff, Flame, ShieldCheck, TrendingUp, TrendingDown } from "lucide-react";
-import { vaults, activity, tips, totalBalanceSats, lockedSats, availableSats, monthlyStackedSats, monthlyGoalSats, fmtSats, fmtBTC, fmtZMW, type Vault } from "@/lib/ustack-data";
+import { ArrowDownToLine, ArrowUpFromLine, Send, Eye, EyeOff, Flame, ShieldCheck, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
+import { tips, fmtSats, fmtBTC, fmtZMW, type Vault } from "@/lib/ustack-data";
 import { CountUp } from "../CountUp";
 import { ProgressRing } from "../ProgressRing";
 import { VaultCard } from "../VaultCard";
+import { useWallet } from "@/lib/hooks/useAppData";
+import { useVaults } from "@/lib/hooks/useAppData";
+import { useActivity } from "@/lib/hooks/useAppData";
+import { useBtcPrice } from "@/lib/hooks/useAppData";
+import { useAuth } from "@/lib/context/auth-context";
 
 export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreateVault }: {
   onOpenVault: (v: Vault) => void;
@@ -15,12 +20,23 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
 }) {
   const [hidden, setHidden] = useState(false);
   const [tab, setTab] = useState<"activity" | "insights" | "tips">("activity");
+  const { user } = useAuth();
+  const { data: wallet } = useWallet();
+  const { data: vaults = [] } = useVaults();
+  const { data: activityItems = [] } = useActivity();
+
+  const totalSats = wallet?.totalSats ?? 0;
+  const lockedSats = wallet?.vaultSats ?? 0;
+  const availableSats = wallet?.availableSats ?? 0;
+
+  const monthlyStacked = vaults.reduce((sum, v) => sum + v.currentSats, 0);
+  const monthlyGoal = vaults.reduce((sum, v) => sum + v.goalSats, 0) || 1;
 
   return (
     <div className="px-5 pt-2 flex flex-col gap-6">
       {/* Greeting */}
       <div>
-        <div className="text-sm text-muted-foreground">Hello, Norman</div>
+        <div className="text-sm text-muted-foreground">Hello, {user?.username ?? "stacker"}</div>
         <div className="text-xs text-muted-foreground/70">Keep stacking. Stay calm.</div>
       </div>
 
@@ -29,7 +45,6 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
         initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
         className="relative rounded-3xl p-6 bg-card overflow-hidden shadow-soft border border-white/5"
       >
-
         <div className="relative flex items-center justify-between">
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Total stack</div>
           <button onClick={() => setHidden(!hidden)} className="w-8 h-8 rounded-full glass flex items-center justify-center">
@@ -39,14 +54,14 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
 
         <div className="relative mt-3 flex items-baseline gap-2">
           <div className="text-[2.6rem] font-semibold tracking-tight tabular-nums">
-            {hidden ? "•••••" : <CountUp value={totalBalanceSats} format={fmtSats} />}
+            {hidden ? "•••••" : <CountUp value={totalSats} format={fmtSats} />}
           </div>
           <div className="text-sm text-muted-foreground">sats</div>
         </div>
         <div className="relative -mt-1 flex items-center gap-3">
-          <span className="text-sm text-muted-foreground">≈ {fmtBTC(totalBalanceSats)} BTC</span>
+          <span className="text-sm text-muted-foreground">≈ {fmtBTC(totalSats)} BTC</span>
           <span className="text-white/20 text-xs">·</span>
-          <span className="text-sm font-medium text-foreground/80">{hidden ? "•••" : fmtZMW(totalBalanceSats)}</span>
+          <span className="text-sm font-medium text-foreground/80">{hidden ? "•••" : fmtZMW(totalSats)}</span>
         </div>
 
         <div className="relative mt-5 grid grid-cols-2 gap-3">
@@ -57,13 +72,13 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
         {/* monthly progress */}
         <div className="relative mt-5">
           <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
-            <span>This month's stack</span>
-            <span>{Math.round((monthlyStackedSats / monthlyGoalSats) * 100)}%</span>
+            <span>Vault progress</span>
+            <span>{Math.round((monthlyStacked / monthlyGoal) * 100)}%</span>
           </div>
           <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: `${(monthlyStackedSats / monthlyGoalSats) * 100}%` }}
+              animate={{ width: `${Math.min((monthlyStacked / monthlyGoal) * 100, 100)}%` }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
               className="h-full bg-primary"
             />
@@ -106,11 +121,15 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
           <button onClick={onCreateVault} className="text-xs text-primary font-semibold">+ New</button>
         </div>
         <div className="mt-3 -mx-5 px-5 flex gap-3 overflow-x-auto no-scrollbar pb-1">
-          {vaults.map((v) => (
-            <div key={v.id} className="shrink-0 w-[15rem]">
-              <VaultCard vault={v} onClick={() => onOpenVault(v)} />
-            </div>
-          ))}
+          {vaults.length === 0 ? (
+            <div className="w-full text-center py-8 text-muted-foreground text-sm">No vaults yet. Create one!</div>
+          ) : (
+            vaults.map((v) => (
+              <div key={v.id} className="shrink-0 w-[15rem]">
+                <VaultCard vault={v} onClick={() => onOpenVault(v)} />
+              </div>
+            ))
+          )}
           <button
             onClick={onCreateVault}
             className="shrink-0 w-[15rem] h-[12rem] rounded-3xl border border-dashed border-white/10 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:bg-card/40 transition"
@@ -129,11 +148,7 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
             ["insights", "Vault Insights"],
             ["tips", "Savings Tips"],
           ] as const).map(([k, label]) => (
-            <button
-              key={k}
-              onClick={() => setTab(k)}
-              className="relative pb-3 text-sm font-medium"
-            >
+            <button key={k} onClick={() => setTab(k)} className="relative pb-3 text-sm font-medium">
               <span className={tab === k ? "text-foreground" : "text-muted-foreground"}>{label}</span>
               {tab === k && <motion.div layoutId="tab-ind" className="absolute -bottom-px left-0 right-0 h-0.5 bg-primary rounded-full" />}
             </button>
@@ -143,11 +158,14 @@ export function HomeScreen({ onOpenVault, onDeposit, onWithdraw, onSend, onCreat
         <div className="mt-4">
           {tab === "activity" && (
             <div className="flex flex-col gap-2">
-              {activity.slice(0, 4).map((a) => <ActivityRow key={a.id} a={a} />)}
+              {activityItems.length === 0 ? (
+                <div className="text-center text-muted-foreground text-sm py-6">No activity yet. Make your first deposit!</div>
+              ) : (
+                activityItems.slice(0, 4).map((a) => <ActivityRow key={a.id} a={a} />)
+              )}
             </div>
           )}
-          {tab === "insights" && <Insights />}
-
+          {tab === "insights" && <Insights vaults={vaults} />}
           {tab === "tips" && (
             <div className="flex flex-col gap-3">
               {tips.map((t, i) => (
@@ -179,11 +197,7 @@ function Stat({ label, value, zmw, accent }: { label: string; value: string; zmw
 
 function QuickAction({ icon: Icon, label, onClick, accent }: { icon: typeof ArrowDownToLine; label: string; onClick: () => void; accent: string }) {
   return (
-    <motion.button
-      whileTap={{ scale: 0.96 }}
-      onClick={onClick}
-      className="rounded-2xl glass-strong p-4 flex flex-col items-center gap-2"
-    >
+    <motion.button whileTap={{ scale: 0.96 }} onClick={onClick} className="rounded-2xl glass-strong p-4 flex flex-col items-center gap-2">
       <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: accent }}>
         <Icon className="w-5 h-5" />
       </div>
@@ -192,15 +206,19 @@ function QuickAction({ icon: Icon, label, onClick, accent }: { icon: typeof Arro
   );
 }
 
-import type { Activity as ActivityT } from "@/lib/ustack-data";
-function ActivityRow({ a }: { a: ActivityT }) {
+interface ActivityItem {
+  id: string; kind: string; title: string; meta: string; when: string;
+}
+function ActivityRow({ a }: { a: ActivityItem }) {
   const colorMap: Record<string, string> = {
     deposit: "oklch(0.73 0.19 55)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
     protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.73 0.19 55)",
+    vault_deposit: "oklch(0.73 0.19 55)", vault_withdraw: "oklch(0.78 0.14 190)", vault_created: "oklch(0.86 0.13 160)",
+    login: "oklch(0.82 0.13 190)",
   };
   return (
     <div className="rounded-2xl bg-card/60 p-3.5 flex items-center gap-3">
-      <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: colorMap[a.kind] }}>
+      <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center" style={{ color: colorMap[a.kind] ?? "oklch(0.73 0.19 55)" }}>
         <Flame className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
@@ -212,21 +230,24 @@ function ActivityRow({ a }: { a: ActivityT }) {
   );
 }
 
-function Insights() {
+function Insights({ vaults }: { vaults: Vault[] }) {
+  const maxStreak = vaults.reduce((m, v) => Math.max(m, v.streakDays), 0);
+  const onTrack = vaults.filter((v) => v.currentSats / v.goalSats >= 0.2).length;
+  const pct = vaults.length > 0 ? onTrack / vaults.length : 0;
   return (
     <div className="grid grid-cols-2 gap-3">
       <div className="rounded-2xl glass p-4">
-        <div className="text-xs text-muted-foreground">Streak</div>
-        <div className="text-2xl font-semibold mt-1">41 days</div>
-        <div className="text-xs text-muted-foreground mt-1">Longest yet</div>
+        <div className="text-xs text-muted-foreground">Best Streak</div>
+        <div className="text-2xl font-semibold mt-1">{maxStreak} days</div>
+        <div className="text-xs text-muted-foreground mt-1">{maxStreak > 0 ? "Keep it going!" : "Start stacking"}</div>
       </div>
       <div className="rounded-2xl glass p-4 flex items-center gap-3">
-        <ProgressRing value={0.68} size={56} accent="teal">
-          <span className="text-[10px] font-semibold">68%</span>
+        <ProgressRing value={pct} size={56} accent="teal">
+          <span className="text-[10px] font-semibold">{Math.round(pct * 100)}%</span>
         </ProgressRing>
         <div>
           <div className="text-xs text-muted-foreground">Goals on track</div>
-          <div className="text-sm font-semibold">4 of 5</div>
+          <div className="text-sm font-semibold">{onTrack} of {vaults.length}</div>
         </div>
       </div>
       <div className="rounded-2xl glass p-4 col-span-2">
@@ -247,14 +268,13 @@ function Insights() {
   );
 }
 
-// Mock sparkline data — 24 hourly points showing today's BTC price movement
+// ── BTC Price Ticker (live data) ──────────────────────────────────────────────
+
 const SPARK_POINTS = [
   588000, 591000, 587000, 594000, 598000, 602000, 599000, 604000,
   601000, 608000, 605000, 611000, 609000, 614000, 612000, 618000,
   615000, 620000, 617000, 622000, 619000, 614000, 608000, 600000,
 ];
-const BASE_PRICE = 600_000;
-const CHANGE_24H = +2.34;
 
 function buildSparkPath(pts: number[], w: number, h: number): string {
   const min = Math.min(...pts);
@@ -266,48 +286,46 @@ function buildSparkPath(pts: number[], w: number, h: number): string {
 }
 
 function PriceTicker() {
-  const [price, setPrice] = useState(BASE_PRICE);
+  const { data: priceData } = useBtcPrice();
+  const basePrice = priceData?.priceZmw ?? 600_000;
+  const [price, setPrice] = useState(basePrice);
   const [flash, setFlash] = useState<"up" | "down" | null>(null);
   const dirRef = useRef(1);
+
+  useEffect(() => {
+    setPrice(basePrice);
+  }, [basePrice]);
 
   useEffect(() => {
     const id = setInterval(() => {
       const delta = Math.floor(Math.random() * 1200) * dirRef.current;
       dirRef.current = Math.random() > 0.45 ? 1 : -1;
       setPrice((p) => {
-        const next = p + delta;
         setFlash(delta >= 0 ? "up" : "down");
         setTimeout(() => setFlash(null), 500);
-        return next;
+        return p + delta;
       });
     }, 3200);
     return () => clearInterval(id);
   }, []);
 
-  const positive = CHANGE_24H >= 0;
+  const change24h = +2.34;
+  const positive = change24h >= 0;
   const sparkPath = buildSparkPath(SPARK_POINTS, 80, 28);
   const strokeColor = positive ? "oklch(0.78 0.14 165)" : "oklch(0.65 0.22 15)";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15 }}
-      className="rounded-2xl glass px-4 py-3.5 flex items-center gap-3"
-    >
+    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="rounded-2xl glass px-4 py-3.5 flex items-center gap-3">
       <div className="w-9 h-9 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0">
         <span className="font-bold text-sm" style={{ color: "oklch(0.74 0.18 55)" }}>₿</span>
       </div>
-
       <div className="flex-1 min-w-0">
         <div className="text-xs font-semibold">Bitcoin</div>
         <div className="text-[10px] text-muted-foreground uppercase tracking-widest">BTC / ZMW</div>
       </div>
-
       <svg width="80" height="28" className="shrink-0">
         <path d={sparkPath} fill="none" stroke={strokeColor} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />
       </svg>
-
       <div className="text-right shrink-0">
         <AnimatePresence mode="wait">
           <motion.div
@@ -323,7 +341,7 @@ function PriceTicker() {
         </AnimatePresence>
         <div className={`flex items-center justify-end gap-0.5 text-[10px] font-semibold ${positive ? "text-[oklch(0.78_0.14_165)]" : "text-[oklch(0.65_0.22_15)]"}`}>
           {positive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-          {positive ? "+" : ""}{CHANGE_24H}% today
+          {positive ? "+" : ""}{change24h}% today
         </div>
       </div>
     </motion.div>

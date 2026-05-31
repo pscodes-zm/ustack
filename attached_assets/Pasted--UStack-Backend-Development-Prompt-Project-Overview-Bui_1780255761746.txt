@@ -1,0 +1,523 @@
+# UStack Backend Development Prompt
+
+## Project Overview
+
+Build the backend for UStack, a Bitcoin savings platform designed for students and young savers. Users can create savings vaults, deposit Bitcoin through the Lightning Network, save toward goals, track progress, and optionally enable price protection features in future versions.
+
+The system should prioritize simplicity, security, scalability, and fast onboarding.
+
+---
+
+# Core Technology Stack
+
+## Backend
+
+* Node.js (TypeScript preferred)
+* Express.js or NestJS
+
+## Database
+
+* PostgreSQL
+
+## Caching & Queues
+
+* Redis
+
+## Authentication
+
+* OTP-based authentication
+* JWT access tokens
+* Refresh tokens
+
+## Bitcoin Infrastructure
+
+* Blink API for Lightning deposits and withdrawals
+
+## Mobile Money
+
+* Airtel Money API
+* MTN MoMo API (future)
+* Zamtel Money API (future)
+
+## Deployment
+
+* Replit (development)
+* Railway / Render / VPS (production)
+
+---
+
+# User Management System
+
+## Registration
+
+Users can register using:
+
+* Phone Number (preferred)
+* Email (optional)
+* Username
+
+Store:
+
+* user_id (UUID)
+* username
+* encrypted_phone
+* encrypted_email
+* account_status
+* created_at
+* updated_at
+
+### Requirements
+
+* No passwords
+* OTP authentication only
+* OTP expires after 5 minutes
+* Maximum 5 OTP requests per hour
+
+---
+
+# Authentication Flow
+
+## Sign Up
+
+1. User enters username.
+2. User enters phone number.
+3. OTP sent.
+4. User verifies OTP.
+5. Account created.
+6. JWT issued.
+
+## Login
+
+1. User enters phone number.
+2. OTP sent.
+3. User verifies OTP.
+4. JWT issued.
+
+---
+
+# User Profile
+
+Users can:
+
+* Change username
+* Change phone number
+* Change email
+* Upload profile picture
+* Configure notifications
+* Enable biometric login
+
+Store:
+
+* profile_picture_url
+* notification_preferences
+* biometric_enabled
+
+---
+
+# Wallet System
+
+## User Balances
+
+Maintain internal balances:
+
+### Available Balance
+
+Bitcoin available immediately.
+
+### Vault Balance
+
+Bitcoin currently stored inside vaults.
+
+### Total Balance
+
+Available Balance + Vault Balance.
+
+Store:
+
+* available_balance_sats
+* vault_balance_sats
+* total_balance_sats
+
+---
+
+# Vault System
+
+Users can create multiple vaults.
+
+## Vault Types
+
+### Stack Vault
+
+Purpose:
+
+* Continuous savings
+* Flexible deposits
+
+Features:
+
+* Goal tracking
+* Progress tracking
+* Optional withdrawal restrictions
+
+### Hodl Vault
+
+Purpose:
+
+* Long-term savings
+
+Features:
+
+* Locked savings
+* Withdrawal penalties
+* Long-term targets
+
+---
+
+# Vault Table
+
+Store:
+
+* vault_id
+* user_id
+* vault_name
+* vault_type
+* target_amount_sats
+* current_balance_sats
+* locked_until
+* withdrawal_penalty
+* status
+* created_at
+
+---
+
+# Vault Actions
+
+## Create Vault
+
+User provides:
+
+* Vault name
+* Vault type
+* Goal amount
+
+System creates vault.
+
+---
+
+## Deposit Into Vault
+
+User selects:
+
+* Vault
+* Amount
+
+System:
+
+* Deducts from available balance
+* Adds to vault balance
+* Logs transaction
+
+---
+
+## Withdraw From Vault
+
+System checks:
+
+* Vault type
+* Lock status
+* Penalty requirements
+
+If approved:
+
+* Deduct vault balance
+* Move funds to available balance
+
+---
+
+# Lightning Integration
+
+## Blink Integration
+
+Use Blink API for:
+
+* Deposits
+* Withdrawals
+* Balance checks
+
+### Deposit Flow
+
+1. User selects Deposit.
+2. Backend generates Lightning invoice.
+3. Invoice displayed.
+4. Blink webhook confirms payment.
+5. User balance updated.
+
+### Withdrawal Flow
+
+1. User enters Lightning invoice.
+2. Backend validates invoice.
+3. Blink sends payment.
+4. Transaction logged.
+5. User balance updated.
+
+---
+
+# Mobile Money Integration
+
+## Supported Methods
+
+* Airtel Money
+* MTN MoMo (future)
+* Zamtel Money (future)
+
+### Mobile Money Deposit
+
+1. User enters amount.
+2. Backend generates payment request.
+3. User confirms on phone.
+4. Callback confirms payment.
+5. User balance updated.
+
+### Mobile Money Withdrawal
+
+1. User requests withdrawal.
+2. System validates balance.
+3. Payment sent.
+4. Callback confirms payout.
+5. User balance updated.
+
+---
+
+# Transaction System
+
+Track every action.
+
+Transaction Types:
+
+* Deposit
+* Withdrawal
+* Vault Deposit
+* Vault Withdrawal
+* Internal Transfer
+* Reward
+* Referral Bonus
+
+Store:
+
+* transaction_id
+* user_id
+* vault_id
+* type
+* amount
+* status
+* method
+* timestamp
+
+---
+
+# Activity Logs
+
+Track:
+
+* Login
+* Logout
+* Deposit
+* Withdrawal
+* Vault Creation
+* Vault Deposit
+* Vault Withdrawal
+* Profile Updates
+
+Store:
+
+* log_id
+* user_id
+* action
+* metadata
+* timestamp
+
+---
+
+# Price Monitoring Service
+
+Use:
+
+* CoinGecko API
+
+Price updates every minute.
+
+Store:
+
+* current_btc_price
+* timestamp
+
+---
+
+# Price Protection System
+
+Users may enable price protection.
+
+## Settings
+
+User selects:
+
+* Trigger: 2%, 5%, or 10%
+* Protection Amount:
+
+  * 25%
+  * 50%
+  * 75%
+  * 100%
+
+Store:
+
+* protection_enabled
+* trigger_percentage
+* protection_percentage
+* asset_state
+
+---
+
+## Trigger Rules
+
+### 2% Drop
+
+* Detect 2% drop
+* Wait 3 minutes
+* If still below threshold:
+
+  * Activate protection
+
+Return to BTC:
+
+* Wait 5 minutes after recovery
+
+---
+
+### 5% Drop
+
+* Detect 5% drop
+* Wait 10 minutes
+
+Return:
+
+* Wait 10 minutes
+
+---
+
+### 10% Drop
+
+* Detect 10% drop
+* Wait 20 minutes
+
+Return:
+
+* Wait 20 minutes
+
+---
+
+# Referral System
+
+Each user receives:
+
+* Referral code
+
+Track:
+
+* referrals_count
+* rewards_earned
+
+---
+
+# Notifications
+
+Send:
+
+* Deposit confirmations
+* Withdrawal confirmations
+* Goal milestones
+* Vault completion
+* Security alerts
+
+Channels:
+
+* Push Notifications
+* SMS
+* Email
+
+---
+
+# Security Requirements
+
+Implement:
+
+* AES-256 encryption
+* HTTPS everywhere
+* JWT authentication
+* Refresh tokens
+* Rate limiting
+* Webhook signature verification
+* Audit logs
+* Device tracking
+
+---
+
+# Scheduled Jobs
+
+Run automatically:
+
+Every 1 minute:
+
+* Bitcoin price check
+
+Every 5 minutes:
+
+* OTP cleanup
+
+Daily:
+
+* Analytics aggregation
+
+Weekly:
+
+* Security audits
+
+Monthly:
+
+* System reports
+
+---
+
+# MVP Deliverables
+
+Build:
+
+✅ OTP Authentication
+
+✅ User Profiles
+
+✅ Bitcoin Wallet Integration (Blink)
+
+✅ Mobile Money Deposits
+
+✅ Mobile Money Withdrawals
+
+✅ Stack Vaults
+
+✅ Hodl Vaults
+
+✅ Transaction History
+
+✅ Activity Logs
+
+✅ Notifications
+
+Prepare architecture for future:
+
+✅ Price Protection
+
+✅ Stable Asset Support
+
+✅ Advanced Savings Automation
+
+The system should be scalable to support 100,000+ users while maintaining security, performance, and low operating costs.

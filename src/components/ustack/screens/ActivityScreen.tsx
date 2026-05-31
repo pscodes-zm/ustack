@@ -1,15 +1,20 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowDownToLine, Trophy, Flame, ShieldCheck, ArrowUpFromLine, Vault } from "lucide-react";
-import { activity, fmtZMW } from "@/lib/ustack-data";
+import { ArrowDownToLine, Trophy, Flame, ShieldCheck, ArrowUpFromLine, Vault, Loader2 } from "lucide-react";
+import { fmtZMW } from "@/lib/ustack-data";
+import { useActivity } from "@/lib/hooks/useAppData";
 
-const iconMap = {
+const iconMap: Record<string, typeof Flame> = {
   deposit: ArrowDownToLine, milestone: Trophy, streak: Flame,
   protection: ShieldCheck, withdraw: ArrowUpFromLine, vault: Vault,
-} as const;
+  vault_deposit: ArrowDownToLine, vault_withdraw: ArrowUpFromLine, vault_created: Vault,
+  login: ShieldCheck,
+};
 const colorMap: Record<string, string> = {
   deposit: "oklch(0.73 0.19 55)", milestone: "oklch(0.86 0.13 160)", streak: "oklch(0.74 0.18 55)",
   protection: "oklch(0.78 0.14 190)", withdraw: "oklch(0.78 0.14 190)", vault: "oklch(0.73 0.19 55)",
+  vault_deposit: "oklch(0.73 0.19 55)", vault_withdraw: "oklch(0.78 0.14 190)",
+  vault_created: "oklch(0.86 0.13 160)", login: "oklch(0.82 0.13 190)",
 };
 
 type FilterKind = "all" | "deposit" | "withdraw" | "vault" | "events";
@@ -22,17 +27,16 @@ const FILTERS: { id: FilterKind; label: string }[] = [
   { id: "events",   label: "Events" },
 ];
 
-const SAT_AMOUNTS: Partial<Record<string, number>> = {
-  a1: 20_000,
-  a4: 50_000,
-};
-
 export function ActivityScreen() {
   const [filter, setFilter] = useState<FilterKind>("all");
+  const { data: activity = [], isLoading } = useActivity();
 
   const filtered = activity.filter((a) => {
     if (filter === "all") return true;
-    if (filter === "events") return ["milestone", "streak", "protection"].includes(a.kind);
+    if (filter === "events") return ["milestone", "streak", "protection", "login"].includes(a.kind);
+    if (filter === "vault") return ["vault", "vault_created", "vault_deposit", "vault_withdraw"].includes(a.kind);
+    if (filter === "deposit") return ["deposit", "vault_deposit"].includes(a.kind);
+    if (filter === "withdraw") return ["withdraw", "vault_withdraw"].includes(a.kind);
     return a.kind === filter;
   });
 
@@ -50,9 +54,7 @@ export function ActivityScreen() {
             key={f.id}
             onClick={() => setFilter(f.id)}
             className={`shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition ${
-              filter === f.id
-                ? "bg-primary text-primary-foreground"
-                : "glass text-muted-foreground"
+              filter === f.id ? "bg-primary text-primary-foreground" : "glass text-muted-foreground"
             }`}
           >
             {f.label}
@@ -60,51 +62,42 @@ export function ActivityScreen() {
         ))}
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={filter}
-          initial={{ opacity: 0, y: 6 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.18 }}
-          className="flex flex-col gap-2"
-        >
-          {filtered.length === 0 ? (
-            <div className="rounded-2xl glass p-8 text-center text-sm text-muted-foreground">
-              No activity yet.
-            </div>
-          ) : (
-            filtered.map((a, i) => {
-              const Icon = iconMap[a.kind];
-              const sats = SAT_AMOUNTS[a.id];
-              const showAmount = (a.kind === "deposit" || a.kind === "withdraw") && sats;
+      {isLoading ? (
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center text-muted-foreground text-sm py-12">
+          {filter === "all" ? "No activity yet. Make your first deposit!" : `No ${filter} activity yet.`}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <AnimatePresence>
+            {filtered.map((a, i) => {
+              const Icon = iconMap[a.kind] ?? Flame;
+              const color = colorMap[a.kind] ?? "oklch(0.73 0.19 55)";
               return (
                 <motion.div
                   key={a.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="rounded-2xl bg-card/60 p-3.5 flex items-center gap-3"
+                  className="rounded-2xl bg-card/60 p-4 flex items-center gap-3"
                 >
-                  <div className="w-11 h-11 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color: colorMap[a.kind] }}>
-                    <Icon className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-xl bg-card border border-white/8 flex items-center justify-center shrink-0" style={{ color }}>
+                    <Icon className="w-4 h-4" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium">{a.title}</div>
-                    <div className="text-xs text-muted-foreground">{a.meta}</div>
+                    <div className="text-sm font-medium truncate">{a.title}</div>
+                    <div className="text-xs text-muted-foreground truncate">{a.meta}</div>
                   </div>
-                  <div className="text-right shrink-0">
-                    {showAmount && (
-                      <div className="text-xs font-semibold text-foreground">{fmtZMW(sats)}</div>
-                    )}
-                    <div className="text-xs text-muted-foreground">{a.when}</div>
-                  </div>
+                  <div className="text-xs text-muted-foreground shrink-0">{a.when}</div>
                 </motion.div>
               );
-            })
-          )}
-        </motion.div>
-      </AnimatePresence>
+            })}
+          </AnimatePresence>
+        </div>
+      )}
     </div>
   );
 }

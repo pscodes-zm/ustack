@@ -1,7 +1,14 @@
 import { Menu, Bell } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/lib/context/auth-context";
+import { useNotifications } from "@/lib/hooks/useAppData";
 
 export function TopBar({ onMenu, onBell }: { onMenu: () => void; onBell: () => void }) {
+  const { user, profile } = useAuth();
+  const { data: notifications = [] } = useNotifications();
+  const hasUnread = notifications.some((n) => n.unread);
+  const initials = profile?.avatar_initials ?? user?.username?.slice(0, 2).toUpperCase() ?? "??";
+
   return (
     <div className="flex items-center justify-between px-5 pt-12 pb-3">
       <motion.button
@@ -21,10 +28,13 @@ export function TopBar({ onMenu, onBell }: { onMenu: () => void; onBell: () => v
           aria-label="Notifications"
         >
           <Bell className="w-5 h-5" />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[oklch(0.73_0.19_55)]" />
+          {hasUnread && <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[oklch(0.73_0.19_55)]" />}
         </motion.button>
-        <div className="w-11 h-11 rounded-2xl bg-card border border-white/8 flex items-center justify-center font-semibold text-sm" style={{ color: "oklch(0.86 0.13 160)" }}>
-          NK
+        <div
+          className="w-11 h-11 rounded-2xl bg-card border border-white/8 flex items-center justify-center font-semibold text-sm"
+          style={{ color: profile?.avatar_color ?? "oklch(0.86 0.13 160)" }}
+        >
+          {initials}
         </div>
       </div>
     </div>

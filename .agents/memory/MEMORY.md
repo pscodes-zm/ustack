@@ -1,0 +1,1 @@
+- [pg client-side shim](pg-client-shim.md) — TanStack Start + Vite doesn't tree-shake Node.js deps (pg, jose) from client bundles; requires a custom Vite plugin to stub them.

@@ -8,6 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { ThemeProvider } from "@/lib/theme-context";
+import { AuthProvider } from "@/lib/context/auth-context";
 
 import appCss from "../styles.css?url";
 
@@ -115,7 +116,9 @@ function RootComponent() {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <Outlet />
+        <AuthProvider>
+          <Outlet />
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

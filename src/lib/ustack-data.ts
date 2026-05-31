@@ -13,6 +13,11 @@ export interface Vault {
   locked: boolean;
   accent: "coral" | "teal" | "mint" | "aqua" | "btc";
   emoji: string;
+  // server-side extended fields
+  lockedUntil?: string | null;
+  penaltyPct?: number;
+  status?: string;
+  createdAt?: string;
 }
 
 export interface Activity {
